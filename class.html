@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CLASS GROUP and Duty Status</title>
+<style>
+    /* Basic styles */
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        border: 5px solid #FF69B4; /* Thick border */
+    }
+    h1 {
+        background-color: #6633CC; /* Violet color */
+        padding: 10px;
+        border-radius: 10px;
+        color: white;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid gray;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #E6E6E6; /* Light gray color */
+    }
+    input[type="text"], input[type="password"], input[type="date"] {
+        padding: 10px;
+        margin-bottom: 10px;
+        width: calc(100% - 22px);
+    }
+    button {
+        padding: 10px 20px;
+        margin-top: 10px;
+    }
+    .duty-label {
+        padding: 10px;
+        border-radius: 5px;
+        color: black; /* Black text color */
+        display: inline-block; /* So they display as blocks */
+        margin-bottom: 10px; /* Margin for spacing */
+    }
+    .on-duty {
+        background-color: #FFFF99; /* Yellow color for on-duty */
+    }
+    .off-duty {
+        background-color: #b9a4c3; /* Light Blue color for off-duty */
+    }
+    p {
+        background-color: #E6E6E6; /* Light gray color */
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    #result {
+        background-color: #ADD8E6; /* Blue color */
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Spacing */
+    }
+    label {
+        background-color: #F7DC6F; /* Yellowish color */
+        padding: 10px;
+        border-radius: 10px;
+        color: black; /* Change text color to black */
+    }
+    .bold {
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+<h1 id="loginTitle">Login</h1>
+<div id="loginDiv">
+    <label for="username">Username</label>
+    <input type="text" id="username" />
+    <label for="password">Password</label>
+    <input type="password" id="password" />
+    <button type="button" id="loginButton">Login</button>
+    <p id="loginMessage" style="color:red;"></p>
+</div>
+
+<div id="tablesDiv" style="display: none;">
+    <h1>Duty Status</h1>
+    <label for="dateInput">Select a date:</label>
+    <input type="date" id="dateInput" />
+    <br /><br />
+    <button type="button" onclick="calculateDayOfWeek()">Calculate</button>
+    <br /><br />
+    <p id="result"></p>
+
+    <h1>Team Members</h1>
+
+    <!-- TEAMA 1 -->
+    <h2>TEAMA 1</h2>
+    <div>
+        <div id="teamA1InputFields">
+            <label for="teamA1RegNo">Reg No</label>
+            <input type="text" id="teamA1RegNo" placeholder="Reg No" />
+            <label for="teamA1FirstName">First Name</label>
+            <input type="text" id="teamA1FirstName" placeholder="First Name" />
+            <label for="teamA1LastName">Last Name</label>
+            <input type="text" id="teamA1LastName" placeholder="Last Name" />
+            <label for="teamA1Remark">Remark</label>
+            <input type="text" id="teamA1Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamA1Btn">Add</button>
+    </div>
+    <table id="tableA1">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersA1"></tbody>
+    </table>
+
+    <!-- TEAMA 2 -->
+    <h2>TEAMA 2</h2>
+    <div>
+        <div id="teamA2InputFields">
+            <label for="teamA2RegNo">Reg No</label>
+            <input type="text" id="teamA2RegNo" placeholder="Reg No" />
+            <label for="teamA2FirstName">First Name</label>
+            <input type="text" id="teamA2FirstName" placeholder="First Name" />
+            <label for="teamA2LastName">Last Name</label>
+            <input type="text" id="teamA2LastName" placeholder="Last Name" />
+            <label for="teamA2Remark">Remark</label>
+            <input type="text" id="teamA2Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamA2Btn">Add</button>
+    </div>
+    <table id="tableA2">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersA2"></tbody>
+    </table>
+
+    <!-- TEAMB 1 -->
+    <h2>TEAMB 1</h2>
+    <div>
+        <div id="teamB1InputFields">
+            <label for="teamB1RegNo">Reg No</label>
+            <input type="text" id="teamB1RegNo" placeholder="Reg No" />
+            <label for="teamB1FirstName">First Name</label>
+            <input type="text" id="teamB1FirstName" placeholder="First Name" />
+            <label for="teamB1LastName">Last Name</label>
+            <input type="text" id="teamB1LastName" placeholder="Last Name" />
+            <label for="teamB1Remark">Remark</label>
+            <input type="text" id="teamB1Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamB1Btn">Add</button>
+    </div>
+    <table id="tableB1">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersB1"></tbody>
+    </table>
+
+    <!-- TEAMB 2 -->
+    <h2>TEAMB 2</h2>
+    <div>
+        <div id="teamB2InputFields">
+            <label for="teamB2RegNo">Reg No</label>
+            <input type="text" id="teamB2RegNo" placeholder="Reg No" />
+            <label for="teamB2FirstName">First Name</label>
+            <input type="text" id="teamB2FirstName" placeholder="First Name" />
+            <label for="teamB2LastName">Last Name</label>
+            <input type="text" id="teamB2LastName" placeholder="Last Name" />
+            <label for="teamB2Remark">Remark</label>
+            <input type="text" id="teamB2Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamB2Btn">Add</button>
+    </div>
+    <table id="tableB2">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersB2"></tbody>
+    </table>
+
+    <!-- TEAM C1 -->
+    <h2>TEAM C1</h2>
+    <div>
+        <div id="teamC1InputFields">
+            <label for="teamC1RegNo">Reg No</label>
+            <input type="text" id="teamC1RegNo" placeholder="Reg No" />
+            <label for="teamC1FirstName">First Name</label>
+            <input type="text" id="teamC1FirstName" placeholder="First Name" />
+            <label for="teamC1LastName">Last Name</label>
+            <input type="text" id="teamC1LastName" placeholder="Last Name" />
+            <label for="teamC1Remark">Remark</label>
+            <input type="text" id="teamC1Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamC1Btn">Add</button>
+    </div>
+    <table id="tableC1">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersC1"></tbody>
+    </table>
+
+    <!-- TEAM C2 -->
+    <h2>TEAM C2</h2>
+    <div>
+        <div id="teamC2InputFields">
+            <label for="teamC2RegNo">Reg No</label>
+            <input type="text" id="teamC2RegNo" placeholder="Reg No" />
+            <label for="teamC2FirstName">First Name</label>
+            <input type="text" id="teamC2FirstName" placeholder="First Name" />
+            <label for="teamC2LastName">Last Name</label>
+            <input type="text" id="teamC2LastName" placeholder="Last Name" />
+            <label for="teamC2Remark">Remark</label>
+            <input type="text" id="teamC2Remark" placeholder="Remark" />
+        </div>
+        <button type="button" id="addTeamC2Btn">Add</button>
+    </div>
+    <table id="tableC2">
+        <thead>
+            <tr>
+                <th>S/No</th>
+                <th>Reg No</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Remark</th>
+                <th class="actionColumn">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="membersC2"></tbody>
+    </table>
+</div>
+
+<script>
+    // User permissions setup
+    const userPermissions = {
+        'admin': true,
+        'viewer': false
+    };
+    let currentUser = null;
+
+    // Function to load members from localStorage
+    const loadMembers = () => {
+        const teams = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+        teams.forEach((team) => {
+            const members = JSON.parse(localStorage.getItem(`members${team}`)) || [];
+            renderMembers(`members${team}`, members);
+        });
+    };
+
+    // Function to render members in table
+    const renderMembers = (tableId, members) => {
+        const tbody = document.getElementById(tableId);
+        tbody.innerHTML = '';
+        members.forEach((member, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${member.regno}</td>
+                <td>${member.firstName}</td>
+                <td>${member.lastName}</td>
+                <td>${member.remark}</td>
+                <td class="actionColumn">
+                    <button class="editButton" data-index="${index}" style="display: ${currentUser === 'admin' ? 'inline-block' : 'none'};">Edit</button>
+                    <button class="deleteButton" data-index="${index}" style="display: ${currentUser === 'admin' ? 'inline-block' : 'none'};">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    };
+
+    // Login function
+    const login = () => {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        if (username === 'admin' && password === 'admin') {
+            currentUser = 'admin';
+        } else if (username === '123' && password === '123') {
+            currentUser = 'viewer';
+        } else {
+            document.getElementById('loginMessage').innerText = 'Invalid username or password.';
+            return;
+        }
+        document.getElementById('loginDiv').style.display = 'none';
+        document.getElementById('loginTitle').style.display = 'none';
+        document.getElementById('tablesDiv').style.display = 'block';
+
+        toggleActionColumns();
+
+        // Set current date in date picker and highlight
+        document.getElementById('dateInput').valueAsDate = new Date();
+        highlightCurrentDate(); // Highlight current date
+        calculateDayOfWeek(); // Calculate duty status for today
+    };
+
+    // Function to toggle action columns based on user role
+    const toggleActionColumns = () => {
+        const actionColumns = document.querySelectorAll('.actionColumn');
+        if (currentUser !== 'admin') {
+            actionColumns.forEach(col => col.style.display = 'none');
+        } else {
+            actionColumns.forEach(col => col.style.display = '');
+        }
+    };
+
+    // Function to highlight the current date input background in blue
+    const highlightCurrentDate = () => {
+        const dateInput = document.getElementById('dateInput');
+        dateInput.style.backgroundColor = 'lightblue';
+    };
+
+    // Event listener for login button
+    document.getElementById('loginButton').addEventListener('click', login);
+    document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === "Enter") login(); });
+    document.getElementById('username').addEventListener('keydown', (e) => { if (e.key === "Enter") login(); });
+
+    // Add member functions
+    const addMember = (team) => {
+        const regNo = document.getElementById(`team${team}RegNo`).value;
+        const firstName = document.getElementById(`team${team}FirstName`).value;
+        const lastName = document.getElementById(`team${team}LastName`).value;
+        const remark = document.getElementById(`team${team}Remark`).value;
+        if (!regNo || !firstName || !lastName ) return;
+        const members = JSON.parse(localStorage.getItem(`members${team}`)) || [];
+        members.push({ regno: regNo, firstName, lastName, remark });
+        localStorage.setItem(`members${team}`, JSON.stringify(members));
+        document.getElementById(`team${team}RegNo`).value = '';
+        document.getElementById(`team${team}FirstName`).value = '';
+        document.getElementById(`team${team}LastName`).value = '';
+        document.getElementById(`team${team}Remark`).value = '';
+        loadMembers();
+    };
+
+    const deleteMember = (team, index) => {
+        const members = JSON.parse(localStorage.getItem(`members${team}`)) || [];
+        members.splice(index, 1);
+        localStorage.setItem(`members${team}`, JSON.stringify(members));
+        loadMembers();
+    };
+
+    const editMember = (team, index, regno, firstName, lastName, remark) => {
+        const members = JSON.parse(localStorage.getItem(`members${team}`)) || [];
+        members[index] = { regno, firstName, lastName, remark };
+        localStorage.setItem(`members${team}`, JSON.stringify(members));
+        loadMembers();
+    };
+
+    // Event listeners for add buttons
+    document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
+    document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
+    document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
+    document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
+    document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
+    document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
+
+    // Delegate edit/delete buttons
+    document.getElementById('tablesDiv').addEventListener('click', (event) => {
+        if (event.target.classList.contains('deleteButton')) {
+            const tableId = event.target.closest('table').id;
+            const team = tableId === 'tableA1' ? 'A1' :
+                         tableId === 'tableA2' ? 'A2' :
+                         tableId === 'tableB1' ? 'B1' :
+                         tableId === 'tableB2' ? 'B2' :
+                         tableId === 'tableC1' ? 'C1' :
+                         tableId === 'tableC2' ? 'C2' : '';
+            const index = event.target.dataset.index;
+            deleteMember(team, index);
+        }
+        if (event.target.classList.contains('editButton')) {
+            const tableId = event.target.closest('table').id;
+            const team = tableId === 'tableA1' ? 'A1' :
+                         tableId === 'tableA2' ? 'A2' :
+                         tableId === 'tableB1' ? 'B1' :
+                         tableId === 'tableB2' ? 'B2' :
+                         tableId === 'tableC1' ? 'C1' :
+                         tableId === 'tableC2' ? 'C2' : '';
+            const index = event.target.dataset.index;
+            const currentMembers = JSON.parse(localStorage.getItem(`members${team}`)) || [];
+            const member = currentMembers[index];
+            const newRegNo = prompt("Enter new Reg No:", member.regno);
+            const newFirstName = prompt("Enter new first name:", member.firstName);
+            const newLastName = prompt("Enter new last name:", member.lastName);
+            const newRemark = prompt("Enter new remark:", member.remark);
+            if (newRegNo && newFirstName && newLastName && newRemark) {
+                editMember(team, index, newRegNo, newFirstName, newLastName, newRemark);
+            }
+        }
+    });
+
+    // Calculate duty schedule
+    document.addEventListener("keydown", (e) => { if (e.key === "Enter") calculateDayOfWeek(); });
+
+    function calculateDayOfWeek() {
+        const inputDateStr = document.getElementById("dateInput").value;
+        const parsedDate = new Date(inputDateStr);
+        if (!isNaN(parsedDate)) {
+            const currentDay = parsedDate.toLocaleDateString(undefined, { weekday: 'long' });
+            const dutyStatus = getDutyStatus(parsedDate);
+            document.getElementById("result").innerHTML = `
+                Selected date:<strong style="color: blue;"> ${parsedDate.toLocaleDateString()} </strong> is on <strong style="color: blue;">${currentDay}</strong><br /><br />
+                ${dutyStatus}`;
+        } else {
+            document.getElementById("result").innerHTML = "Invalid date.";
+        }
+    }
+
+    // Map each weekday to a team in order, starting from your start date
+    const dutyStartDate = new Date(2025, 10, 24); // 24 Nov 2025
+    const teamsOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+    const totalTeams = teamsOrder.length;
+
+    function getDutyStatus(date) {
+        const dayOfWeekNum = date.getDay();
+        if (dayOfWeekNum === 0 || dayOfWeekNum === 6) {
+            // Weekend
+            return "No duty scheduled on weekends.";
+        }
+
+        // Calculate number of weekdays since start date
+        let diffDays = 0;
+        const start = new Date(dutyStartDate.getFullYear(), dutyStartDate.getMonth(), dutyStartDate.getDate());
+        const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        while (start < target) {
+            start.setDate(start.getDate() + 1);
+            const wd = start.getDay();
+            if (wd !== 0 && wd !== 6) {
+                diffDays++;
+            }
+        }
+
+        const teamIndex = diffDays % totalTeams;
+        const teamOnDuty = teamsOrder[teamIndex];
+
+        let statusHTML = '';
+        teamsOrder.forEach((team, index) => {
+            if (team === teamOnDuty) {
+                statusHTML += `<label class="duty-label on-duty">${team} is on duty</label><br>`;
+            } else {
+                statusHTML += `<label class="duty-label off-duty">${team} is off duty</label><br>`;
+            }
+        });
+        return statusHTML;
+    }
+
+    // When login is successful, trigger duty status for current date
+    // and highlight date in blue
+    // (already handled in login function above)
+
+</script>
+</body>
+</html>
