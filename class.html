@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CLASS GROUP and Duty Status</title>
 <style>
-  /* Basic styles for layout and appearance */
+  /* Basic styles */
   body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    border: 5px solid #69ff78; /* Thick pink border */
+    border: 5px solid #69ff78;
   }
   h1 {
-    background-color: #6633CC; /* Violet */
+    background-color: #6633CC;
     padding: 10px;
     border-radius: 10px;
     color: white;
@@ -60,7 +60,7 @@
   .teamInputContainer {
     /* Will be toggled via JS */
   }
-  /* Styles for duty labels */
+  /* Labels for duty */
   .duty-label {
     padding: 10px;
     border-radius: 5px;
@@ -69,10 +69,10 @@
     margin-bottom: 10px;
   }
   .on-duty {
-    background-color: #FFFF99; /* Yellow */
+    background-color: #FFFF99;
   }
   .off-duty {
-    background-color: #b9a4c3; /* Light Blue */
+    background-color: #b9a4c3;
   }
   #result {
     background-color: #ADD8E6;
@@ -87,7 +87,7 @@
     margin-bottom: 10px;
   }
   label {
-    background-color: #F7DC6F; /* Yellowish */
+    background-color: #F7DC6F;
     padding: 10px;
     border-radius: 10px;
     color: black;
@@ -102,7 +102,10 @@
 
 <h1 id="loginTitle">Login</h1>
 
-<!-- Login Section -->
+<!-- Message Box -->
+<div id="messageBox"></div>
+
+<!-- Login -->
 <div id="loginDiv">
   <label for="username">Username</label>
   <input type="text" id="username" />
@@ -113,7 +116,7 @@
   <p id="loginMessage" style="color:red;"></p>
 </div>
 
-<!-- Main Content (hidden until login) -->
+<!-- Main Content -->
 <div id="tablesDiv" style="display:none;">
 
   <!-- Duty Schedule -->
@@ -127,8 +130,9 @@
 
   <!-- Team Members -->
   <h1>Team Members</h1>
+  <button id="shuffleButton" style="background-color:#ff4d4d; margin-bottom:20px;">Shuffle Members</button>
 
-  <!-- TEAMA 1 -->
+  <!-- TEAM A1 -->
   <h2>TEAM A1</h2>
   <div class="teamInputContainer" id="teamA1InputContainer">
     <div id="teamA1InputFields">
@@ -157,7 +161,7 @@
     <tbody id="membersA1"></tbody>
   </table>
 
-  <!-- TEAMA 2 -->
+  <!-- TEAM A2 -->
   <h2>TEAM A2</h2>
   <div class="teamInputContainer" id="teamA2InputContainer">
     <div id="teamA2InputFields">
@@ -186,7 +190,7 @@
     <tbody id="membersA2"></tbody>
   </table>
 
-  <!-- TEAMB 1 -->
+  <!-- TEAM B1 -->
   <h2>TEAM B1</h2>
   <div class="teamInputContainer" id="teamB1InputContainer">
     <div id="teamB1InputFields">
@@ -215,7 +219,7 @@
     <tbody id="membersB1"></tbody>
   </table>
 
-  <!-- TEAMB 2 -->
+  <!-- TEAM B2 -->
   <h2>TEAM B2</h2>
   <div class="teamInputContainer" id="teamB2InputContainer">
     <div id="teamB2InputFields">
@@ -305,7 +309,7 @@
 </div>
 
 <script>
-  // Firebase configuration (replace with your own config)
+  // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDbm1ApKMcu9Q8HwJwKqROgBNndtr1Vl_8",
     authDomain: "tstdb-8e676.firebaseapp.com",
@@ -314,265 +318,372 @@
     messagingSenderId: "995214869280",
     appId: "1:995214869280:web:58ce365c970bd53300cd45"
   };
-
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
   let currentUser = null; // 'admin' or 'viewer'
 
-  // Utility to get reference to members collection for a group
   const getGroupRef = (groupId) => db.collection('members').doc(groupId).collection('members');
 
   // --- Login ---
-  document.getElementById('loginButton').addEventListener('click', () => {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    if (username === 'admin' && password === 'admin') {
-      currentUser = 'admin';
-    } else if (username === '123' && password === '123') {
-      currentUser = 'viewer';
-    } else {
-      document.getElementById('loginMessage').innerText = 'Invalid login.';
-      return;
-    }
-    // Show main content
-    document.getElementById('loginDiv').style.display = 'none';
-    document.getElementById('tablesDiv').style.display = 'block';
-    // document.getElementById('loginTitle').innerText = 'Dashboard';
-    // Hide the login title header when logged in
+document.getElementById('loginButton').addEventListener('click', () => {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+  if (username === 'admin' && password === 'admin') {
+    currentUser = 'admin';
+  } else if (username === '123' && password === '123') {
+    currentUser = 'viewer';
+  } else {
+    showMessage('Invalid login.', 'red');
+    return;
+  }
+  document.getElementById('loginDiv').style.display = 'none';
+  document.getElementById('tablesDiv').style.display = 'block';
   document.getElementById('loginTitle').style.display = 'none';
 
-    toggleActionVisibility();
-    loadAllMembers();
-    setDateToday();
-    calculateDayOfWeek();
+  toggleActionVisibility();
+
+  loadAllMembers();
+  setDateToday();
+  calculateDayOfWeek();
+});
+
+// --- Logout ---
+document.getElementById('logoutButton').addEventListener('click', () => {
+  currentUser = null;
+  document.getElementById('loginDiv').style.display = '';
+  document.getElementById('tablesDiv').style.display = 'none';
+  document.getElementById('loginTitle').innerText = 'Login';
+  document.getElementById('loginTitle').style.display = '';
+  toggleActionVisibility();
+});
+
+// --- Toggle visibility based on role ---
+const toggleActionVisibility = () => {
+  const isViewer = (currentUser === 'viewer');
+  // Hide/show action buttons in all member rows
+  document.querySelectorAll('.editButton, .deleteButton').forEach(btn => {
+    btn.style.display = isViewer ? 'none' : '';
+  });
+  // Hide/show add buttons
+  document.querySelectorAll('button[id^="addTeam"]').forEach(btn => {
+    btn.style.display = isViewer ? 'none' : '';
+  });
+  // Hide/show input containers
+  document.querySelectorAll('.teamInputContainer').forEach(div => {
+    div.style.display = isViewer ? 'none' : '';
+  });
+  // Hide/show action columns in tables
+  document.querySelectorAll('.actionColumn').forEach(td => {
+    td.style.display = isViewer ? 'none' : '';
+  });
+  // Hide shuffle button for viewers
+  document.getElementById('shuffleButton').style.display = isViewer ? 'none' : '';
+};
+
+// --- Load all members ---
+const loadAllMembers = () => {
+  ['A1','A2','B1','B2','C1','C2'].forEach(group => loadMembers(group));
+};
+
+const loadMembers = (groupId) => {
+  getGroupRef(groupId).get()
+    .then(snapshot => {
+      const members = [];
+      snapshot.forEach(doc => {
+        members.push({ id: doc.id, ...doc.data(), team: groupId });
+      });
+      renderMembers(`members${groupId}`, members);
+    });
+};
+
+const renderMembers = (tbodyId, members) => {
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  members.forEach((member, index) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${member.regno}</td>
+      <td>${member.firstName}</td>
+      <td>${member.lastName}</td>
+      <td>${member.remark}</td>
+      <td class="actionColumn">
+        <button class="editButton" data-id="${member.id}" data-team="${member.team}">Edit</button>
+        <button class="deleteButton" data-id="${member.id}" data-team="${member.team}">Delete</button>
+      </td>
+    `;
+    // Hide buttons if viewer
+    if (currentUser !== 'admin') {
+      row.querySelector('.editButton').style.display='none';
+      row.querySelector('.deleteButton').style.display='none';
+    }
+    tbody.appendChild(row);
+  });
+};
+
+// --- Add member ---
+const addMember = (groupId) => {
+  const regno = document.getElementById(`team${groupId}RegNo`).value.trim();
+  const firstName = document.getElementById(`team${groupId}FirstName`).value.trim();
+  const lastName = document.getElementById(`team${groupId}LastName`).value.trim();
+  const remark = document.getElementById(`team${groupId}Remark`).value.trim();
+  if (!regno || !firstName || !lastName) {
+    showMessage('Please fill all fields.', 'orange');
+    return;
+  }
+  getGroupRef(groupId).add({ regno, firstName, lastName, remark, team: groupId }).then(() => {
+    document.getElementById(`team${groupId}RegNo`).value = '';
+    document.getElementById(`team${groupId}FirstName`).value = '';
+    document.getElementById(`team${groupId}LastName`).value = '';
+    document.getElementById(`team${groupId}Remark`).value = '';
+    loadMembers(groupId);
+    showMessage('Member added successfully!', 'green');
+  }).catch(() => {
+    showMessage('Error adding member.', 'red');
+  });
+};
+
+// --- Delete ---
+const deleteMember = (groupId, memberId) => {
+  if (currentUser !== 'admin') return;
+  getGroupRef(groupId).doc(memberId).delete()
+    .then(() => {
+      loadMembers(groupId);
+      showMessage('Member deleted.', 'red');
+    })
+    .catch(() => {
+      showMessage('Error deleting member.', 'red');
+    });
+};
+
+// --- Edit ---
+const editMember = (groupId, memberId, regno, firstName, lastName, remark) => {
+  if (currentUser !== 'admin') return;
+  getGroupRef(groupId).doc(memberId).update({ regno, firstName, lastName, remark })
+    .then(() => {
+      loadMembers(groupId);
+      showMessage('Member updated.', 'blue');
+    })
+    .catch(() => {
+      showMessage('Error updating member.', 'red');
+    });
+};
+
+// --- Event listeners for add buttons ---
+document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
+document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
+document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
+document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
+document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
+document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
+
+// --- Delegate edit/delete buttons ---
+document.getElementById('tablesDiv').addEventListener('click', (e) => {
+  if (e.target.classList.contains('deleteButton')) {
+    if (currentUser !== 'admin') return;
+    const groupId = e.target.dataset.team;
+    const memberId = e.target.dataset.id;
+    deleteMember(groupId, memberId);
+  }
+  if (e.target.classList.contains('editButton')) {
+    if (currentUser !== 'admin') return;
+    const groupId = e.target.dataset.team;
+    const memberId = e.target.dataset.id;
+    getGroupRef(groupId).doc(memberId).get().then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        const newRegNo = prompt('Reg No:', data.regno);
+        const newFirstName = prompt('First Name:', data.firstName);
+        const newLastName = prompt('Last Name:', data.lastName);
+        const newRemark = prompt('Remark:', data.remark);
+        if (newRegNo && newFirstName && newLastName && newRemark) {
+          editMember(groupId, memberId, newRegNo, newFirstName, newLastName, newRemark);
+        }
+      }
+    });
+  }
+});
+
+// --- Schedule functions ---
+const setDateToday = () => {
+  const today = new Date();
+  document.getElementById('dateInput').valueAsDate = today;
+  // Also call calculate for today
+  calculateDayOfWeek();
+};
+const dutyStartDate = new Date(2025, 10, 24);
+const teamsOrder = ['A1','A2','B1','B2','C1','C2'];
+const totalTeams = teamsOrder.length;
+
+const getWeekdayDiff = (startDate, endDate) => {
+  let count=0;
+  let current=new Date(startDate);
+  while(current<=endDate){
+    const d=current.getDay();
+    if(d!==0 && d!==6) count++;
+    current.setDate(current.getDate()+1);
+  }
+  return Math.max(0,count-1);
+};
+const calculateDayOfWeek = () => {
+  const dateStr = document.getElementById('dateInput').value;
+  const date=new Date(dateStr);
+  if (isNaN(date)) {
+    document.getElementById('result').innerText='Invalid date.';
+    return;
+  }
+  const dayName = date.toLocaleDateString(undefined, { weekday: 'long' });
+  const selectedDay = date.getDay();
+
+  if (selectedDay===0 || selectedDay===6) {
+    const todayStr = new Date().toLocaleDateString();
+    document.getElementById('result').innerHTML=`
+      <p style="font-weight:bold;">Weekend - no duty</p>
+    `;
+    return;
+  }
+
+  const diff = getWeekdayDiff(dutyStartDate, date);
+  const index=diff % totalTeams;
+  const teamOnDuty=teamsOrder[index];
+
+  // Determine previous and next team
+  const currentIdx = index;
+  const prevIdx = (currentIdx -1 + totalTeams) % totalTeams;
+  const nextIdx = (currentIdx +1) % totalTeams;
+  const prevTeam = teamsOrder[prevIdx];
+  const nextTeam = teamsOrder[nextIdx];
+
+  let html='';
+  teamsOrder.forEach(t => {
+    if(t===teamOnDuty){
+      html+=`<label class="duty-label on-duty">${t} is on duty</label><br>`;
+    } else {
+      html+=`<label class="duty-label off-duty">${t} is off duty</label><br>`;
+    }
+  });
+  const todayStr = new Date().toLocaleDateString();
+  document.getElementById('result').innerHTML=`
+    <p style="font-weight:bold;">Current date: <span style="color:#0000FF;">${todayStr}</span></p>
+    <p style="font-weight:bold;">Selected date: <span style="color:#0000FF;">${date.toLocaleDateString()}</span> is on <span style="color:#FF0000;">${dayName}</span></p>
+    <br/>
+    
+    <label style="background-color: #E0E9E8FF; padding: 8px; border-radius: 5px;">
+<label style="background-color: #FFA07A; padding: 5px; border-radius: 5px;">Previous Team On Duty:<strong> <mark>&nbsp;${prevTeam}</mark></strong></label>
+                                              <br>
+                                              <br>
+<label style="background-color: #9FDD6DF1; color:#040404FF; padding: 5px; border-radius: 5px;">Current Team On Duty: &nbsp;<strong><mark>&nbsp;${teamOnDuty}</mark></strong></label>
+                                              <br>
+                                              <br>
+<label style="background-color: #D876E9FF; padding: 5px; border-radius: 5px;">Next Team On Duty: &nbsp;&nbsp;&nbsp;<strong><mark>&nbsp${nextTeam}</mark></strong></label><br></label>
+     <br>
+    <br/>${html}
+  `;
+};
+
+function showMessage(msg, color) {
+  const box=document.getElementById('messageBox');
+  box.innerHTML=msg;
+  box.style.backgroundColor=color==='red'?'#c0392b':color==='green'?'#27ae60':'#f39c12';
+  box.style.display='block';
+  setTimeout(()=>{box.style.display='none';},2000);
+}
+
+// --- Shuffle members ---
+const shuffleMembersAcrossTables = () => {
+  const allTableIds = ['membersA1','membersA2','membersB1','membersB2','membersC1','membersC2'];
+  let allMembers = [];
+
+  // Gather all members
+  allTableIds.forEach(id => {
+    Array.from(document.getElementById(id).children).forEach(row => {
+      const cells = row.children;
+      const team = row.querySelector('.editButton')?.dataset.team || '';
+      allMembers.push({ regno: cells[1].innerText, firstName: cells[2].innerText, lastName: cells[3].innerText, remark: cells[4].innerText, team: team });
+    });
   });
 
-  // --- Logout ---
-  document.getElementById('logoutButton').addEventListener('click', () => {
-    currentUser = null;
-    document.getElementById('loginDiv').style.display = '';
-    document.getElementById('tablesDiv').style.display = 'none';
-    document.getElementById('loginTitle').innerText = 'Login';
+  // Separate leaders
+  const leadersMap = {}; // team -> member object
+  const nonLeaders = [];
+
+  allMembers.forEach(m => {
+    if (m.remark.toLowerCase().includes("leader")) {
+      leadersMap[m.team] = m;
+    } else {
+      nonLeaders.push(m);
+    }
   });
 
-  // --- Hide team input containers, labels, add buttons, and action column for viewers ---
-  const toggleActionVisibility = () => {
-    const isAdmin = (currentUser === 'admin');
+  // Shuffle non-leaders
+  for (let i = nonLeaders.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [nonLeaders[i], nonLeaders[j]] = [nonLeaders[j], nonLeaders[i]];
+  }
 
-    // Toggle edit/delete buttons
-    document.querySelectorAll('.editButton, .deleteButton').forEach(btn => {
-      btn.style.display = isAdmin ? '' : 'none';
-    });
-    // Toggle add buttons
-    document.querySelectorAll('button[id^="addTeam"]').forEach(btn => {
-      btn.style.display = isAdmin ? '' : 'none';
-    });
-    // Toggle entire input containers
-    document.querySelectorAll('.teamInputContainer').forEach(div => {
-      div.style.display = isAdmin ? '' : 'none';
-    });
-    // Toggle action columns
-    document.querySelectorAll('.actionColumn').forEach(td => {
-      td.style.display = isAdmin ? '' : 'none';
-    });
+  // Clear tables
+  allTableIds.forEach(id => { document.getElementById(id).innerHTML=''; });
+
+  // Assign leaders fixed
+  const teamMembers = {
+    A1: [], A2: [], B1: [], B2: [], C1: [], C2: []
   };
+  Object.keys(leadersMap).forEach(team => {
+    teamMembers[team].push(leadersMap[team]);
+  });
+  // Distribute remaining
+  const teamKeys = Object.keys(teamMembers);
+  let tIdx=0;
+  while (nonLeaders.length>0) {
+    const team=teamKeys[tIdx % teamKeys.length];
+    teamMembers[team].push(nonLeaders.shift());
+    tIdx++;
+  }
 
-  // --- Load all members ---
-  const loadAllMembers = () => {
-    const groups = ['A1','A2','B1','B2','C1','C2'];
-    groups.forEach(group => loadMembers(group));
-  };
-
-  // --- Load members of a group ---
-  const loadMembers = (groupId) => {
-    getGroupRef(groupId).get()
-      .then(snapshot => {
-        const members = [];
-        snapshot.forEach(doc => {
-          members.push({ id: doc.id, ...doc.data(), team: groupId });
-        });
-        renderMembers(`members${groupId}`, members);
-      })
-      .catch(console.error);
-  };
-
-  // --- Render members ---
-  const renderMembers = (tableBodyId, members) => {
-    const tbody = document.getElementById(tableBodyId);
-    tbody.innerHTML = '';
-    members.forEach((member, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${index + 1}</td>
+  // Render with leaders fixed
+  Object.keys(teamMembers).forEach(team => {
+    const tbody=document.getElementById(`members${team}`);
+    tbody.innerHTML='';
+    teamMembers[team].forEach((member, idx) => {
+      const isLeader=member===leadersMap[team];
+      const remarkDisplay=isLeader ? `${member.remark} (Leader)` : member.remark;
+      const row=document.createElement('tr');
+      row.innerHTML=`
+        <td>${idx+1}${isLeader ? ' <strong>(Leader)</strong>' : ''}</td>
         <td>${member.regno}</td>
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
-        <td>${member.remark}</td>
+        <td>${remarkDisplay}</td>
         <td class="actionColumn">
-          <button class="editButton" data-id="${member.id}" data-team="${member.team}">Edit</button>
-          <button class="deleteButton" data-id="${member.id}" data-team="${member.team}">Delete</button>
+          <button class="editButton" data-team="${team}">Edit</button>
+          <button class="deleteButton" data-team="${team}">Delete</button>
         </td>
       `;
       tbody.appendChild(row);
-
-      // Hide buttons if not admin
-      if (currentUser !== 'admin') {
-        row.querySelector('.editButton').style.display = 'none';
-        row.querySelector('.deleteButton').style.display = 'none';
-      }
     });
-  };
-
-  // --- Add member ---
-  const addMember = (groupId) => {
-    const regno = document.getElementById(`team${groupId}RegNo`).value.trim();
-    const firstName = document.getElementById(`team${groupId}FirstName`).value.trim();
-    const lastName = document.getElementById(`team${groupId}LastName`).value.trim();
-    const remark = document.getElementById(`team${groupId}Remark`).value.trim();
-
-    if (!regno || !firstName || !lastName) return;
-
-    getGroupRef(groupId).add({ regno, firstName, lastName, remark, team: groupId })
-      .then(() => {
-        // Clear input fields
-        document.getElementById(`team${groupId}RegNo`).value = '';
-        document.getElementById(`team${groupId}FirstName`).value = '';
-        document.getElementById(`team${groupId}LastName`).value = '';
-        document.getElementById(`team${groupId}Remark`).value = '';
-        loadMembers(groupId);
-      })
-      .catch(console.error);
-  };
-
-  // --- Delete member ---
-  const deleteMember = (groupId, memberId) => {
-    if (currentUser !== 'admin') return;
-    getGroupRef(groupId).doc(memberId).delete()
-      .then(() => loadMembers(groupId))
-      .catch(console.error);
-  };
-
-  // --- Edit member ---
-  const editMember = (groupId, memberId, regno, firstName, lastName, remark) => {
-    if (currentUser !== 'admin') return;
-    getGroupRef(groupId).doc(memberId).update({ regno, firstName, lastName, remark })
-      .then(() => loadMembers(groupId))
-      .catch(console.error);
-  };
-
-  // --- Button Event Listeners ---
-  document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
-  document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
-  document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
-  document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
-  document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
-  document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
-
-  // --- Delegate edit/delete buttons ---
-  document.getElementById('tablesDiv').addEventListener('click', (e) => {
-    if (e.target.classList.contains('deleteButton')) {
-      if (currentUser !== 'admin') return;
-      const groupId = e.target.dataset.team;
-      const memberId = e.target.dataset.id;
-      deleteMember(groupId, memberId);
-    }
-    if (e.target.classList.contains('editButton')) {
-      if (currentUser !== 'admin') return;
-      const groupId = e.target.dataset.team;
-      const memberId = e.target.dataset.id;
-      getGroupRef(groupId).doc(memberId).get()
-        .then(doc => {
-          if (doc.exists) {
-            const data = doc.data();
-            const newRegNo = prompt('Reg No:', data.regno);
-            const newFirstName = prompt('First Name:', data.firstName);
-            const newLastName = prompt('Last Name:', data.lastName);
-            const newRemark = prompt('Remark:', data.remark);
-            if (newRegNo && newFirstName && newLastName && newRemark) {
-              editMember(groupId, memberId, newRegNo, newFirstName, newLastName, newRemark);
-            }
-          }
-        })
-        .catch(console.error);
-    }
   });
+};
 
-  // --- Schedule functions ---
-  const setDateToday = () => {
-    document.getElementById('dateInput').valueAsDate = new Date();
-  };
+document.getElementById('shuffleButton').addEventListener('click', () => {
+  if(currentUser==='admin') {
+    shuffleMembersAcrossTables();
+    showMessage('Members shuffled!', 'blue');
+  }
+});
 
-  // Starting date for duty rotation
-  const dutyStartDate = new Date(2025, 10, 24); // November 24, 2025 (month 10 = November)
+// --- Initialize ---
+document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
+document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
+document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
+document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
+document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
+document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
 
-  const teamsOrder = ['A1','A2','B1','B2','C1','C2'];
-  const totalTeams = teamsOrder.length;
-
-  // Helper function to calculate weekday-only days passed
-  const getWeekdayDiff = (startDate, endDate) => {
-    let count = 0;
-    let current = new Date(startDate);
-    while (current <= endDate) {
-      const day = current.getDay();
-      if (day !== 0 && day !== 6) { // skip weekends
-        count++;
-      }
-      current.setDate(current.getDate() + 1);
-    }
-    // Start date counts as day 1, so subtract 1 to align with rotation
-    return Math.max(0, count - 1);
-  };
-
-  const calculateDayOfWeek = () => {
-    const dateStr = document.getElementById('dateInput').value;
-    const date = new Date(dateStr);
-    if (isNaN(date)) {
-      document.getElementById('result').innerText = 'Invalid date.';
-      return;
-    }
-    const dayName = date.toLocaleDateString(undefined, { weekday: 'long' });
-    const selectedDay = date.getDay();
-
-    // Check if selected date is Saturday (6) or Sunday (0)
-    if (selectedDay === 0 || selectedDay === 6) {
-      // Show weekend message
-      const todayStr = new Date().toLocaleDateString();
-      document.getElementById('result').innerHTML = `
-        Current date: <strong style="color: green;">${todayStr}</strong><br />
-        Selected date: <strong style="color: blue;">${date.toLocaleDateString()}</strong><br /><br />
-        <strong style="color: red;">ALL TEAMS ARE OFF DUTY DURING WEEKEND</strong>
-      `;
-      return;
-    }
-
-    // Calculate how many weekday days passed since start date
-    const weekdayDiff = getWeekdayDiff(dutyStartDate, date);
-    // Determine team duty index
-    const index = weekdayDiff % totalTeams;
-    const teamOnDuty = teamsOrder[index];
-
-    // Build HTML for duty assignment
-    let html = '';
-    teamsOrder.forEach(t => {
-      if (t === teamOnDuty) {
-        html += `<label class="duty-label on-duty">${t} is on duty</label><br>`;
-      } else {
-        html += `<label class="duty-label off-duty">${t} is off duty</label><br>`;
-      }
-    });
-    const todayStr = new Date().toLocaleDateString();
-    document.getElementById('result').innerHTML = `
-      Current date: <strong style="color: green;">${todayStr}</strong><br />
-      Selected date: <strong style="color: blue;">${date.toLocaleDateString()}</strong><br /><br />
-      ${html}
-    `;
-  };
-
-  // Initialize date and duty info
-  setDateToday();
-  loadAllMembers();
+// --- Set today's date and load members on page load ---
+setDateToday();
+loadAllMembers();
 
 </script>
 </body>
