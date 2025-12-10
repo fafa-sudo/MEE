@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CLASS GROUP and Duty Status</title>
 <style>
-  /* Basic styles */
   body {
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -58,7 +57,7 @@
   }
   /* For hiding input containers for viewers */
   .teamInputContainer {
-    /* Will be toggled via JS */
+    margin-bottom: 20px;
   }
   /* Labels for duty */
   .duty-label {
@@ -132,7 +131,8 @@
   <h1>Team Members</h1>
   <button id="shuffleButton" style="background-color:#ff4d4d; margin-bottom:20px;">Shuffle Members</button>
 
-  <!-- TEAM A1 -->
+  <!-- Teams Blocks -->
+  <!-- A1 -->
   <h2>TEAM A1</h2>
   <div class="teamInputContainer" id="teamA1InputContainer">
     <div id="teamA1InputFields">
@@ -150,18 +150,13 @@
   <table id="tableA1">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersA1"></tbody>
   </table>
 
-  <!-- TEAM A2 -->
+  <!-- A2 -->
   <h2>TEAM A2</h2>
   <div class="teamInputContainer" id="teamA2InputContainer">
     <div id="teamA2InputFields">
@@ -179,18 +174,13 @@
   <table id="tableA2">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersA2"></tbody>
   </table>
 
-  <!-- TEAM B1 -->
+  <!-- B1 -->
   <h2>TEAM B1</h2>
   <div class="teamInputContainer" id="teamB1InputContainer">
     <div id="teamB1InputFields">
@@ -208,18 +198,13 @@
   <table id="tableB1">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersB1"></tbody>
   </table>
 
-  <!-- TEAM B2 -->
+  <!-- B2 -->
   <h2>TEAM B2</h2>
   <div class="teamInputContainer" id="teamB2InputContainer">
     <div id="teamB2InputFields">
@@ -237,18 +222,13 @@
   <table id="tableB2">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersB2"></tbody>
   </table>
 
-  <!-- TEAM C1 -->
+  <!-- C1 -->
   <h2>TEAM C1</h2>
   <div class="teamInputContainer" id="teamC1InputContainer">
     <div id="teamC1InputFields">
@@ -266,18 +246,13 @@
   <table id="tableC1">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersC1"></tbody>
   </table>
 
-  <!-- TEAM C2 -->
+  <!-- C2 -->
   <h2>TEAM C2</h2>
   <div class="teamInputContainer" id="teamC2InputContainer">
     <div id="teamC2InputFields">
@@ -295,12 +270,7 @@
   <table id="tableC2">
     <thead>
       <tr>
-        <th>S/No</th>
-        <th>Reg No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Remark</th>
-        <th class="actionColumn">Actions</th>
+        <th>S/No</th><th>Reg No</th><th>First Name</th><th>Last Name</th><th>Remark</th><th class="actionColumn">Actions</th>
       </tr>
     </thead>
     <tbody id="membersC2"></tbody>
@@ -309,7 +279,7 @@
 </div>
 
 <script>
-  // Firebase configuration
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDbm1ApKMcu9Q8HwJwKqROgBNndtr1Vl_8",
     authDomain: "tstdb-8e676.firebaseapp.com",
@@ -318,11 +288,10 @@
     messagingSenderId: "995214869280",
     appId: "1:995214869280:web:58ce365c970bd53300cd45"
   };
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  let currentUser = null; // 'admin' or 'viewer'
+  let currentUser = null;
 
   const getGroupRef = (groupId) => db.collection('members').doc(groupId).collection('members');
 
@@ -362,23 +331,18 @@ document.getElementById('logoutButton').addEventListener('click', () => {
 // --- Toggle visibility based on role ---
 const toggleActionVisibility = () => {
   const isViewer = (currentUser === 'viewer');
-  // Hide/show action buttons in all member rows
   document.querySelectorAll('.editButton, .deleteButton').forEach(btn => {
     btn.style.display = isViewer ? 'none' : '';
   });
-  // Hide/show add buttons
   document.querySelectorAll('button[id^="addTeam"]').forEach(btn => {
     btn.style.display = isViewer ? 'none' : '';
   });
-  // Hide/show input containers
   document.querySelectorAll('.teamInputContainer').forEach(div => {
     div.style.display = isViewer ? 'none' : '';
   });
-  // Hide/show action columns in tables
   document.querySelectorAll('.actionColumn').forEach(td => {
     td.style.display = isViewer ? 'none' : '';
   });
-  // Hide shuffle button for viewers
   document.getElementById('shuffleButton').style.display = isViewer ? 'none' : '';
 };
 
@@ -403,6 +367,7 @@ const renderMembers = (tbodyId, members) => {
   tbody.innerHTML = '';
   members.forEach((member, index) => {
     const row = document.createElement('tr');
+    row.setAttribute('data-id', member.id || '');
     row.innerHTML = `
       <td>${index + 1}</td>
       <td>${member.regno}</td>
@@ -414,11 +379,6 @@ const renderMembers = (tbodyId, members) => {
         <button class="deleteButton" data-id="${member.id}" data-team="${member.team}">Delete</button>
       </td>
     `;
-    // Hide buttons if viewer
-    if (currentUser !== 'admin') {
-      row.querySelector('.editButton').style.display='none';
-      row.querySelector('.deleteButton').style.display='none';
-    }
     tbody.appendChild(row);
   });
 };
@@ -448,6 +408,7 @@ const addMember = (groupId) => {
 // --- Delete ---
 const deleteMember = (groupId, memberId) => {
   if (currentUser !== 'admin') return;
+  alert(`Deleting member from ${groupId}`);
   getGroupRef(groupId).doc(memberId).delete()
     .then(() => {
       loadMembers(groupId);
@@ -461,6 +422,7 @@ const deleteMember = (groupId, memberId) => {
 // --- Edit ---
 const editMember = (groupId, memberId, regno, firstName, lastName, remark) => {
   if (currentUser !== 'admin') return;
+  alert(`Editing member in ${groupId}`);
   getGroupRef(groupId).doc(memberId).update({ regno, firstName, lastName, remark })
     .then(() => {
       loadMembers(groupId);
@@ -471,35 +433,35 @@ const editMember = (groupId, memberId, regno, firstName, lastName, remark) => {
     });
 };
 
-// --- Event listeners for add buttons ---
-document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
-document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
-document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
-document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
-document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
-document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
+// --- Event Listeners for add buttons ---
+['A1','A2','B1','B2','C1','C2'].forEach(group => {
+  document.getElementById(`addTeam${group}Btn`).addEventListener('click', () => addMember(group));
+});
 
 // --- Delegate edit/delete buttons ---
 document.getElementById('tablesDiv').addEventListener('click', (e) => {
   if (e.target.classList.contains('deleteButton')) {
     if (currentUser !== 'admin') return;
-    const groupId = e.target.dataset.team;
-    const memberId = e.target.dataset.id;
-    deleteMember(groupId, memberId);
+    const group = e.target.dataset.team;
+    const id = e.target.dataset.id;
+    if (confirm(`Are you sure you want to delete this member from ${group}?`)) {
+      deleteMember(group, id);
+    }
   }
   if (e.target.classList.contains('editButton')) {
     if (currentUser !== 'admin') return;
-    const groupId = e.target.dataset.team;
-    const memberId = e.target.dataset.id;
-    getGroupRef(groupId).doc(memberId).get().then(doc => {
+    const group = e.target.dataset.team;
+    const id = e.target.dataset.id;
+    getGroupRef(group).doc(id).get().then(doc => {
       if (doc.exists) {
         const data = doc.data();
         const newRegNo = prompt('Reg No:', data.regno);
         const newFirstName = prompt('First Name:', data.firstName);
         const newLastName = prompt('Last Name:', data.lastName);
         const newRemark = prompt('Remark:', data.remark);
-        if (newRegNo && newFirstName && newLastName && newRemark) {
-          editMember(groupId, memberId, newRegNo, newFirstName, newLastName, newRemark);
+        if (newRegNo && newFirstName && newLastName) {
+          // Removed check for newRemark to allow empty remark
+          editMember(group, id, newRegNo, newFirstName, newLastName, newRemark);
         }
       }
     });
@@ -510,7 +472,6 @@ document.getElementById('tablesDiv').addEventListener('click', (e) => {
 const setDateToday = () => {
   const today = new Date();
   document.getElementById('dateInput').valueAsDate = today;
-  // Also call calculate for today
   calculateDayOfWeek();
 };
 const dutyStartDate = new Date(2025, 10, 24);
@@ -538,10 +499,7 @@ const calculateDayOfWeek = () => {
   const selectedDay = date.getDay();
 
   if (selectedDay===0 || selectedDay===6) {
-    const todayStr = new Date().toLocaleDateString();
-    document.getElementById('result').innerHTML=`
-      <p style="font-weight:bold;">Weekend - no duty</p>
-    `;
+    document.getElementById('result').innerHTML=`<p style="font-weight:bold;">Weekend - no duty</p>`;
     return;
   }
 
@@ -549,7 +507,7 @@ const calculateDayOfWeek = () => {
   const index=diff % totalTeams;
   const teamOnDuty=teamsOrder[index];
 
-  // Determine previous and next team
+  // Previous and next team logic
   const currentIdx = index;
   const prevIdx = (currentIdx -1 + totalTeams) % totalTeams;
   const nextIdx = (currentIdx +1) % totalTeams;
@@ -566,7 +524,7 @@ const calculateDayOfWeek = () => {
   });
   const todayStr = new Date().toLocaleDateString();
   document.getElementById('result').innerHTML=`
-    <p style="font-weight:bold;">Current date: <span style="color:#0000FF;">${todayStr}</span></p>
+    <p style="font-weight:bold;">ToDay's Date: <span style="color:#0000FF;">&nbsp;${todayStr}&nbsp;</span></p>
     <p style="font-weight:bold;">Selected date: <span style="color:#0000FF;">${date.toLocaleDateString()}</span> is on <span style="color:#FF0000;">${dayName}</span></p>
     <br/>
     
@@ -591,8 +549,14 @@ function showMessage(msg, color) {
   setTimeout(()=>{box.style.display='none';},2000);
 }
 
-// --- Shuffle members ---
+// --------- Shuffle members ---------
+// Only members with empty remark are swapped across tables.
+// Members with non-empty remarks stay fixed at top (S/N=1).
+// Members with empty remarks are shuffled/swapped, then re-rendered with fixed non-empty at top.
+
 const shuffleMembersAcrossTables = () => {
+  alert('Shuffling members among teams.');
+
   const allTableIds = ['membersA1','membersA2','membersB1','membersB2','membersC1','membersC2'];
   let allMembers = [];
 
@@ -601,90 +565,119 @@ const shuffleMembersAcrossTables = () => {
     Array.from(document.getElementById(id).children).forEach(row => {
       const cells = row.children;
       const team = row.querySelector('.editButton')?.dataset.team || '';
-      allMembers.push({ regno: cells[1].innerText, firstName: cells[2].innerText, lastName: cells[3].innerText, remark: cells[4].innerText, team: team });
+      allMembers.push({
+        regno: cells[1].innerText,
+        firstName: cells[2].innerText,
+        lastName: cells[3].innerText,
+        remark: cells[4].innerText,
+        team: team,
+        id: row.getAttribute('data-id')
+      });
     });
   });
 
-  // Separate leaders
-  const leadersMap = {}; // team -> member object
-  const nonLeaders = [];
+  // Separate members into fixed (non-empty remark) and free (empty remark)
+  const fixedMembers = allMembers.filter(m => m.remark.trim() !== ''); // stay fixed
+  const freeMembers = allMembers.filter(m => m.remark.trim() === ''); // shuffle/swapped
 
+  // Shuffle free members
+  for (let i = freeMembers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [freeMembers[i], freeMembers[j]] = [freeMembers[j], freeMembers[i]];
+  }
+
+  // Swap free members across tables with fixed members
+  // For each free member, find a fixed member from a different table and swap data
+  const fixedByTeam = {};
+  // Organize fixed members by team for quick access
   allMembers.forEach(m => {
-    if (m.remark.toLowerCase().includes("leader")) {
-      leadersMap[m.team] = m;
-    } else {
-      nonLeaders.push(m);
+    if (m.remark.trim() !== '') {
+      if (!fixedByTeam[m.team]) fixedByTeam[m.team] = [];
+      fixedByTeam[m.team].push(m);
     }
   });
 
-  // Shuffle non-leaders
-  for (let i = nonLeaders.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [nonLeaders[i], nonLeaders[j]] = [nonLeaders[j], nonLeaders[i]];
+  for (let fm of freeMembers) {
+    let candidates = [];
+    // Collect fixed members from other tables
+    Object.keys(fixedByTeam).forEach(t => {
+      if (t !== fm.team) {
+        candidates = candidates.concat(fixedByTeam[t]);
+      }
+    });
+    if (candidates.length === 0) continue;
+
+    const swapCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+
+    // Swap data
+    const temp = { ...fm };
+    fm.regno = swapCandidate.regno;
+    fm.firstName = swapCandidate.firstName;
+    fm.lastName = swapCandidate.lastName;
+    fm.remark = swapCandidate.remark;
+
+    swapCandidate.regno = temp.regno;
+    swapCandidate.firstName = temp.firstName;
+    swapCandidate.lastName = temp.lastName;
+    swapCandidate.remark = temp.remark;
   }
 
-  // Clear tables
-  allTableIds.forEach(id => { document.getElementById(id).innerHTML=''; });
+  // Clear all tables
+  allTableIds.forEach(id => (document.getElementById(id).innerHTML = ''));
 
-  // Assign leaders fixed
-  const teamMembers = {
-    A1: [], A2: [], B1: [], B2: [], C1: [], C2: []
-  };
-  Object.keys(leadersMap).forEach(team => {
-    teamMembers[team].push(leadersMap[team]);
+  // Reorganize members by team
+  const teamMembersMap = {};
+  allMembers.forEach(m => {
+    if (!teamMembersMap[m.team]) teamMembersMap[m.team] = [];
+    teamMembersMap[m.team].push(m);
   });
-  // Distribute remaining
-  const teamKeys = Object.keys(teamMembers);
-  let tIdx=0;
-  while (nonLeaders.length>0) {
-    const team=teamKeys[tIdx % teamKeys.length];
-    teamMembers[team].push(nonLeaders.shift());
-    tIdx++;
-  }
 
-  // Render with leaders fixed
-  Object.keys(teamMembers).forEach(team => {
-    const tbody=document.getElementById(`members${team}`);
-    tbody.innerHTML='';
-    teamMembers[team].forEach((member, idx) => {
-      const isLeader=member===leadersMap[team];
-      const remarkDisplay=isLeader ? `${member.remark} (Leader)` : member.remark;
-      const row=document.createElement('tr');
-      row.innerHTML=`
-        <td>${idx+1}${isLeader ? ' <strong>(Leader)</strong>' : ''}</td>
-        <td>${member.regno}</td>
-        <td>${member.firstName}</td>
-        <td>${member.lastName}</td>
-        <td>${remarkDisplay}</td>
+  // For each team, re-render with fixed members at top, following with shuffled free members
+  Object.keys(teamMembersMap).forEach(team => {
+    const fixedInTeam = allMembers.filter(m => m.team === team && m.remark.trim() !== '');
+    const freeInTeam = allMembers.filter(m => m.team === team && m.remark.trim() === '');
+
+    // Shuffle free in team if needed
+    for (let i = freeInTeam.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [freeInTeam[i], freeInTeam[j]] = [freeInTeam[j], freeInTeam[i]];
+    }
+
+    const combined = [...fixedInTeam, ...freeInTeam]; // fixed always at top
+    const tbody = document.getElementById(`members${team}`);
+    combined.forEach((m, index) => {
+      const row = document.createElement('tr');
+      row.setAttribute('data-id', m.id || '');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${m.regno}</td>
+        <td>${m.firstName}</td>
+        <td>${m.lastName}</td>
+        <td>${m.remark}</td>
         <td class="actionColumn">
-          <button class="editButton" data-team="${team}">Edit</button>
-          <button class="deleteButton" data-team="${team}">Delete</button>
+          <button class="editButton" data-id="${m.id}" data-team="${team}">Edit</button>
+          <button class="deleteButton" data-id="${m.id}" data-team="${team}">Delete</button>
         </td>
       `;
       tbody.appendChild(row);
+      // Update Firebase
+      if (m.id) {
+        getGroupRef(team).doc(m.id).update({
+          regno: m.regno,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          remark: m.remark
+        }).catch(() => {
+          showMessage('Error updating member in Firebase.', 'red');
+        });
+      }
     });
   });
+
+  showMessage('Shuffle completed!', 'green');
 };
 
-document.getElementById('shuffleButton').addEventListener('click', () => {
-  if(currentUser==='admin') {
-    shuffleMembersAcrossTables();
-    showMessage('Members shuffled!', 'blue');
-  }
-});
-
-// --- Initialize ---
-document.getElementById('addTeamA1Btn').addEventListener('click', () => addMember('A1'));
-document.getElementById('addTeamA2Btn').addEventListener('click', () => addMember('A2'));
-document.getElementById('addTeamB1Btn').addEventListener('click', () => addMember('B1'));
-document.getElementById('addTeamB2Btn').addEventListener('click', () => addMember('B2'));
-document.getElementById('addTeamC1Btn').addEventListener('click', () => addMember('C1'));
-document.getElementById('addTeamC2Btn').addEventListener('click', () => addMember('C2'));
-
-// --- Set today's date and load members on page load ---
-setDateToday();
-loadAllMembers();
-
+document.getElementById('shuffleButton').addEventListener('click', shuffleMembersAcrossTables);
 </script>
 </body>
 </html>
