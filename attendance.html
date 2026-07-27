@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>⚙️ Class List Attendance</title>
+<link rel="icon" href="images/mat.png" type="image/png"/>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+/* Basic Reset & Body Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #fcfcfc 0%, #635858 100%);
+}
+
+/* Login Section Styles */
+#loginDiv {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+#loginDiv input {
+  padding: 10px;
+  margin: 10px 0;
+  width: calc(100% - 22px);
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+#loginDiv button {
+  padding: 10px 20px;
+  font-size: 1em;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4CAF50;
+  color: #fff;
+  cursor: pointer;
+}
+#loginDiv button:hover {
+  background-color: #45a049;
+}
+
+/* Main Content Styles */
+#tablesDiv {
+  display: none;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+#messageBox {
+  margin: 10px auto;
+  padding: 10px;
+  max-width: 600px;
+  display: none;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+}
+#messageBox.show {
+  display: block;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+table, th, td {
+  border: 1px solid #999;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #ffeb99;
+}
+
+/* Style for button groups to align buttons horizontally */
+.button-group {
+  display: flex;
+  gap: 8px; /* space between buttons */
+  align-items: center; /* vertically align buttons if needed */
+}
+
+/* Styles for attendance buttons P, AC, A */
+.attendance-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 2px solid #555;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+/* Colors for buttons */
+.attendance-btn.P {
+  background-color: #4CAF50; color: white; border-color:#388E3C; /* Green */
+}
+.attendance-btn.P:hover {
+  background-color: #45a049;
+  border-color: #2e7d32;
+  box-shadow: 0 0 5px #2e7d32 inset;
+}
+.attendance-btn.AC {
+  background-color: #ff9800; color: white; border-color:#f57c00; /* Orange */
+}
+.attendance-btn.AC:hover {
+  background-color: #fb8c00;
+  border-color: #ef6c00;
+  box-shadow: 0 0 5px #ef6c00 inset;
+}
+.attendance-btn.A {
+  background-color: #f44336; color: white; border-color:#c62828; /* Red */
+}
+.attendance-btn.A:hover {
+  background-color: #e53935;
+  border-color: #b71c1c;
+  box-shadow: 0 0 5px #b71c1c inset;
+}
+
+/* Additional style for P button if less than half total */
+.attendance-btn.P.less-than-half {
+  background-color: #2196F3; /* Blue */
+}
+
+/* Styles for Edit buttons EDIT P, EDIT AC, EDIT A */
+.edit-attack {
+  margin-top: 4px;
+}
+.edit-btn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 4px;
+  transition: all 0.2s;
+}
+.edit-btn.editP {
+  background-color: #2196F3; color: white; /* Blue */
+}
+.edit-btn.editP:hover {
+  background-color: #1976D2;
+  box-shadow: 0 0 5px #1976D2 inset;
+}
+.edit-btn.editAC {
+  background-color: #FF9800; color: white; /* Orange */
+}
+.edit-btn.editAC:hover {
+  background-color: #EF6C00;
+  box-shadow: 0 0 5px #EF6C00 inset;
+}
+.edit-btn.editA {
+  background-color: #E91E63; color: white; /* Pink */
+}
+.edit-btn.editA:hover {
+  background-color: #C2185B;
+  box-shadow: 0 0 5px #C2185B inset;
+}
+
+/* Styles for message edit & delete buttons */
+.message-action-btn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 4px;
+  transition: all 0.2s;
+}
+.message-action-btn.editMsg {
+  background-color: #2196F3; color: white; /* Blue */
+}
+.message-action-btn.editMsg:hover {
+  background-color: #1976D2;
+  box-shadow: 0 0 5px #1976D2 inset;
+}
+.message-action-btn.delMsg {
+  background-color: #d32f2f; color: white; /* Red */
+}
+.message-action-btn.delMsg:hover {
+  background-color: #b71c1c;
+  box-shadow: 0 0 5px #b71c1c inset;
+}
+
+/* Action column buttons (delete, edit) for members */
+.action-btn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 4px;
+  transition: all 0.2s;
+}
+.action-btn.edit {
+  background-color: #2196F3; color: white; /* Blue */
+}
+.action-btn.edit:hover {
+  background-color: #1976D2;
+  box-shadow: 0 0 5px #1976D2 inset;
+}
+.action-btn.delete {
+  background-color: #d32f2f; color: white; /* Red */
+}
+.action-btn.delete:hover {
+  background-color: #b71c1c;
+  box-shadow: 0 0 5px #b71c1c inset;
+}
+
+/* Logout Button Styles */
+#logoutBtn {
+  background-color: #d33;
+  float: right;
+  margin-bottom: 10px;
+}
+#logoutBtn:hover {
+  background-color: #a33;
+}
+
+/* General Button Styles */
+button {
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: #fff;
+  font-size: 1em;
+  transition: all 0.2s;
+}
+button:hover {
+  background-color: #45a049;
+}
+
+/* Add member section style */
+#addMemberSection {
+  margin-top: 20px;
+}
+.attendance-options {
+  max-width: 300px;
+  margin: 20px auto;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.attendance-options ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attendance-options li {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Specific styles for each status */
+.attendance-options li:nth-child(1) {
+  background: #4CAF50; /* Green */
+}
+
+.attendance-options li:nth-child(2) {
+  background: #FF9800; /* Orange */
+}
+
+.attendance-options li:nth-child(3) {
+  background: #F44336; /* Red */
+}
+h3 {         /* keeps styling tight around text */
+  padding: 5px;  
+  background: #68b0f8;           /* space inside */ 
+  color: #050505;                    /* white text */
+  font-family: Arial, sans-serif; /* clean font */
+  font-size: 1.5em;               /* slightly larger */
+  border-radius: 8px;             /* rounded corners */
+  letter-spacing: 1px;            /* spacing between letters */
+  text-transform: uppercase;      /* uppercase text */
+  margin: 5px auto; 
+  text-align:center;             /* auto margins center it horizontally */
+}
+h1 {
+  text-align: center;              /* centers the heading horizontally */
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 2.2em;                 /* larger size for prominence */
+  font-weight: bold;
+  color: #ffffff;                   /* white text */
+  background: linear-gradient(135deg, #3e4d67, #89bc8b); /* green gradient */
+  padding: 15px 30px;               /* spacing around text */
+  border-radius: 12px;              /* rounded corners */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25); /* soft shadow */
+  letter-spacing: 1.5px;            /* spacing between letters */
+  text-transform: uppercase;        /* makes text uppercase */
+  margin: 20px auto;                /* centers block with spacing */
+}
+/* Container for the navigation */
+.mynav {
+  background-color: #333; /* Dark background */
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+/* Remove default list styles and set layout */
+.mynav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Horizontal layout */
+}
+
+/* Style for each dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Style for the link buttons */
+.dropdown li a {
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: block;
+  background-color: #444; /* Slightly lighter on hover */
+  transition: background-color 0.3s;
+}
+
+.dropdown li a:hover {
+  background-color: #555; /* Hover effect */
+}
+
+/* Style for the dropdown menu (if you add submenus) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #444;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block; /* Show on hover */
+}
+
+/* Optional: Style for the list items inside dropdown */
+.dropdown-content a {
+  padding: 12px 16px;
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #555;
+}
+/* Style for the menu link */
+#menu1 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #3498db; /* Blue background */
+  color: white;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  border-radius: 4px;
+  position: relative; /* For positioning icon if needed */
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+#menu1:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+  cursor: pointer;
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Add dropdown icon using ::after pseudo-element */
+#menu1::after {
+  content: "▼"; /* Unicode for down arrow */
+  font-size: 0.7em;
+  margin-left: 8px;
+  vertical-align: middle;
+  transition: transform 0.3s;
+}
+
+/* Optional: animate icon on hover (like rotating) */
+#menu1:hover::after {
+  transform: rotate(180deg);
+}
+/* Footer styling */
+.presence-footer {
+  background-color: #222; /* dark background for contrast */
+  padding: 20px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  color: #fff;
+  font-style: italic;
+  border-top: 4px solid #444;
+  margin-top: 40px;
+}
+
+/* Quote styling */
+.presence-footer .quote {
+  font-size: 1.2em;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+/* Style for the button link */
+.styled-link {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+  color: #ffffff; /* Text color */
+  background-color: #4CAF50; /* Button background color */
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add an icon before the text (e.g., a clipboard or checkmark) */
+.styled-link::before {
+  content: "✅"; /* Unicode symbol, change as needed */
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+/* Hover effect */
+.styled-link:hover {
+  background-color: #45a049; /* Darker shade on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Active/pressed effect */
+.styled-link:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Optional: Add a focus outline for accessibility */
+.styled-link:focus {
+  outline: 3px dashed #fff;
+  outline-offset: 4px;
+}
+</style>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- Login form -->
+<div id="loginDiv">
+  <input type="text" id="username" placeholder="Email or Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <br />
+  <button id="loginBtn">Login</button>
+  <div id="loginMsg" style="color:red; margin-top:10px;"></div>
+</div>
+
+<!-- Main app content -->
+<div id="tablesDiv">
+  <button id="logoutBtn">Logout</button>
+<button class="back-button" onclick="goBack()">
+  <span class="arrow">&larr;</span> Back
+</button>
+</div>
+<!-- drop down nav buttons -->
+<div class="mynav">
+  <ul>
+    <li class="dropdown">
+     <a href="#" id="menu1">conduct & timetable</a>
+      <div class="dropdown-content">
+        <a href="image.html">Timetable</a>
+        <a href="conduct.html">Conduct</a>
+        <a href="onlinequiz.html">OnlineQuiz</a>
+      </div>
+    </li>
+  </ul>
+</div>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+  <h1>Class List Attendance</h1>
+<!-- attendance list from google -->
+<div class="systems" style="text-align: center; margin-top: 20px;">
+  <a class="styled-link" href="https://docs.google.com/spreadsheets/d/1z2frB7F_GtETxBd2fFqimPVfVFJ01nYe2fQqTRYM4tA/edit?gid=0#gid=0" target="_blank">CLASS ATTENDANCE</a>
+</div>
+  <!-- notices -->
+  <h2>notices</h2>
+  <div id="noticesContainer" style="border:1px solid #999; height:200px; overflow-y:auto; padding:10px; margin-bottom:10px;"></div>
+  <input type="text" id="messageInput" class="MsgInput" placeholder="Type message..." style="width:70%; padding:8px;" />
+  <button id="sendMsgBtn" class="SendMsg">Send</button>
+
+    <!-- Add member -->
+<div class="attendance-options">
+  <ul>
+    <li>P — PRESENT</li>
+    <li>AC — ABSENT WITH COMMUNICATION</li>
+    <li>A — ABSENT</li>
+  </ul>
+</div>
+
+  <div id="addMemberSection" class="addMemberSection">
+    <h3>Add Member</h3>
+    <input type="text" id="addRegNo" placeholder="Reg No" />
+    <input type="text" id="addFirstName" placeholder="First Name" />
+    <input type="text" id="addLastName" placeholder="Last Name" />
+    <input type="text" id="addRemark" placeholder="Remark" />
+    <button id="addMemberBtn">Add Member</button>
+  </div>
+</div>
+
+  <!-- Members Table -->
+  <h3>Members</h3>
+  <table id="membersTable">
+    <thead>
+      <tr>
+        <th>S/No</th>
+        <th>Reg No</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Remark</th>
+        <th class="idColumn">IDNO</th>
+        <th>Attendance</th>
+        <th class="actionColumn">Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+<!-- Footer with quote -->
+<footer class="presence-footer">
+  <p class="quote">"The best way to be absent is to be present in the moment."</p>
+  <p>"The future depends on what you do today." — Mahatma Gandhi</p>
+</footer>
+<script>
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDbm1ApKMcu9Q8HwJwKqROgBNndtr1Vl_8",
+  authDomain: "tstdb-8e676.firebaseapp.com",
+  projectId: "tstdb-8e676",
+  storageBucket: "tstdb-8e676.appspot.com",
+  messagingSenderId: "995214869280",
+  appId: "1:995214869280:web:58ce365c970bd53300cd45"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let currentUserRole = null; // 'admin', 'user', or null
+
+// Elements
+const loginDiv = document.getElementById('loginDiv');
+const tablesDiv = document.getElementById('tablesDiv');
+const loginMsg = document.getElementById('loginMsg');
+const loginBtn = document.getElementById('loginBtn');
+const messageContainer = document.getElementById('noticesContainer');
+const messageInput = document.getElementById('messageInput');
+const sendMsgBtn = document.getElementById('sendMsgBtn');
+const membersTbody = document.querySelector('#membersTable tbody');
+const addRegNo = document.getElementById('addRegNo');
+const addFirstName = document.getElementById('addFirstName');
+const addLastName = document.getElementById('addLastName');
+const addRemark = document.getElementById('addRemark');
+const addMemberBtn = document.getElementById('addMemberBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function checkLogin() {
+  const role = localStorage.getItem('role');
+  if (role) {
+    currentUserRole = role;
+    loginDiv.style.display='none';
+    tablesDiv.style.display='block';
+    loadMembers();
+    loadnotices();
+    toggleUIBasedOnRole();
+  } else {
+    loginDiv.style.display='block';
+    tablesDiv.style.display='none';
+  }
+}
+window.onload = checkLogin;
+
+document.getElementById('loginBtn').onclick = () => {
+  const user= document.getElementById('username').value.trim();
+  const pass= document.getElementById('password').value.trim();
+  if(user==='admin@gmail.com' && pass==='Admin123') {
+    localStorage.setItem('role','admin');
+  } else if(user==='meemat@gmail.com' && pass==='meemat123') {
+    localStorage.setItem('role','user');
+  } else {
+    loginMsg.innerText='Invalid credentials.';
+    return;
+  }
+  checkLogin();
+};
+
+document.getElementById('logoutBtn').onclick = () => {
+  localStorage.clear();
+  window.location.href = 'index.html';
+};
+
+function toggleUIBasedOnRole() {
+ if (currentUserRole === 'user' || currentUserRole === 'viewer') {
+  document.querySelectorAll('.editBtn, .deleteBtn, .addMemberSection').forEach(el => el.style.display = 'none');
+}
+}
+
+// Load members
+function loadMembers() {
+  db.collection('members').doc('Class').collection('members').get()
+  .then(snap => {
+    membersTbody.innerHTML='';
+    let i=1;
+    snap.forEach(doc => {
+      const data = doc.data();
+      const id = doc.id;
+      const attendance = data.attendance || { total:0, P:0, AC:0, A:0 };
+      const row=document.createElement('tr');
+      row.innerHTML= `
+        <td>${i++}</td>
+        <td>${data.regno}</td>
+        <td>${data.firstName}</td>
+        <td>${data.lastName}</td>
+        <td>${data.remark}</td>
+        <td class="idData">${id}</td>
+        <td>${renderAttendance(attendance, id)}</td>
+        <td>
+          <div class="button-group">
+            <button class="editBtn" data-id="${id}">✏️</button>
+            <button class="deleteBtn" data-id="${id}">❌</button>
+          </div>
+        </td>`;
+      membersTbody.appendChild(row);
+    });
+     if (currentUserRole === 'user' || currentUserRole === 'viewer') {
+      document.querySelectorAll('.editBtn, .deleteBtn, .idData, .addMemberSection, .idColumn, .actionColumn,.MsgInput,.SendMsg,.edit-btn,#editmsg, #deltemsg').forEach(c => c.style.display='none');
+      
+    }
+  });
+}
+
+// Render attendance section with toggle buttons
+function renderAttendance(attendance, memberId) {
+  const PCount= attendance.P || 0;
+  const ACCount= attendance.AC || 0;
+  const ACount= attendance.A || 0;
+  const totalCount= attendance.total || 0;
+
+  // Determine if P is less than half of total
+  const isLessThanHalf = PCount < totalCount/2;
+
+  return `
+  <div class="attendance-group">
+    <button class="attendance-btn P ${isLessThanHalf ? 'less-than-half' : ''}" data-member="${memberId}" data-status="P" onclick="selectAttendance(this, 'P')">P (${PCount})</button>
+    <button class="attendance-btn AC" data-member="${memberId}" data-status="AC" onclick="selectAttendance(this, 'AC')">AC (${ACCount})</button>
+    <button class="attendance-btn A" data-member="${memberId}" data-status="A" onclick="selectAttendance(this, 'A')">A (${ACount})</button>
+  </div>
+  <div style="font-size:0.9em;">Total: <span id="total_${memberId}">${totalCount}</span></div>
+  <div class="edit-attack button-group">
+    <button class="edit-btn editP" data-member="${memberId}" onclick="editAttendanceCount('${memberId}', 'P')">EDIT P</button>
+    <button class="edit-btn editAC" data-member="${memberId}" onclick="editAttendanceCount('${memberId}', 'AC')">EDIT AC</button>
+    <button class="edit-btn editA" data-member="${memberId}" onclick="editAttendanceCount('${memberId}', 'A')">EDIT A</button>
+  </div>
+  `;
+}
+
+// Handle attendance button click with toggle logic
+function selectAttendance(btn, status) {
+  if(currentUserRole !== 'admin') return;
+  const memberId= btn.dataset.member;
+  const now= Date.now();
+
+  const lastSelectionKey= `lastSelection_${memberId}_${status}`;
+  const lastTimeStr= localStorage.getItem(lastSelectionKey);
+  const lastTime= lastTimeStr ? parseInt(lastTimeStr) : 0;
+
+  // Check if 10 minutes (600,000 ms) has passed
+  if (now - lastTime < 600000) {
+    alert('You can only increment after 10 minutes since last change for this type.');
+    return;
+  }
+
+  // Proceed with the rest of the function
+  const lastStatusKey= `prevStatus_${memberId}`;
+  const prevStatus= localStorage.getItem(lastStatusKey);
+
+  const memberRef= db.collection('members').doc('Class').collection('members').doc(memberId);
+  memberRef.get().then(doc => {
+    if(!doc.exists) return;
+    const data= doc.data();
+    const attendance= data.attendance || { total:0, P:0, AC:0, A:0 };
+    const counts= { P: attendance.P || 0, AC: attendance.AC || 0, A: attendance.A || 0 };
+
+    // Handle decrement of previous count if needed
+    if(prevStatus && prevStatus !== status) {
+      if(prevStatus==='P') counts.P= Math.max(counts.P - 1, 0);
+      if(prevStatus==='AC') counts.AC= Math.max(counts.AC - 1, 0);
+      if(prevStatus==='A') counts.A= Math.max(counts.A - 1, 0);
+    }
+
+    // Increment the current status count
+    counts[status]= (counts[status]||0)+1;
+
+    const totalCount= counts.P + counts.AC + counts.A;
+    const newAttendance= {
+      total: totalCount,
+      P: counts.P,
+      AC: counts.AC,
+      A: counts.A
+    };
+
+    // Update in Firestore
+    memberRef.update({attendance: newAttendance}).then(() => {
+      loadMembers();
+      localStorage.setItem(lastSelectionKey, now.toString());
+      localStorage.setItem(lastStatusKey, status);
+    });
+  });
+}
+
+// Load notices
+function loadnotices() {
+  firebase.firestore().collection('notices').onSnapshot(snap => {
+    document.getElementById('noticesContainer').innerHTML='';
+    snap.forEach(doc => {
+      const data= doc.data();
+      const msgDiv= document.createElement('div');
+      msgDiv.innerHTML= `
+        <!-- <b>${data.sender}:</b> -->
+         ${data.message}
+        <div class="button-group">
+          <button id"editmsg" class="message-action-btn editMsg" data-id="${doc.id}">✏️</button>
+          <button id="deltemsg" class="message-action-btn delMsg" data-id="${doc.id}">❌</button>
+        </div>`;
+      document.getElementById('noticesContainer').appendChild(msgDiv);
+    
+// Check user role
+if (currentUserRole === 'user' || currentUserRole === 'viewer') {
+  // Hide all buttons with class 'editMsg' and 'delMsg'
+  document.querySelectorAll('.editMsg, .delMsg').forEach(btn => {
+    btn.style.display = 'none';
+  });
+}
+    });
+  });
+}
+
+// Send message
+document.getElementById('sendMsgBtn').onclick= ()=> {
+  const msg= messageInput.value.trim();
+  if(!msg) return;
+  firebase.firestore().collection('notices').add({
+    sender: currentUserRole,
+    message: msg
+  }).then(()=> {
+    messageInput.value='';
+  });
+}
+
+// Add member
+document.getElementById('addMemberBtn').onclick= ()=> {
+  if(currentUserRole!=='admin') return;
+  const regno= addRegNo.value.trim();
+  const firstName= addFirstName.value.trim();
+  const lastName= addLastName.value.trim();
+  const remark= addRemark.value.trim();
+  if(!regno || !firstName || !lastName) {
+    alert('Fill all fields');
+    return;
+  }
+  db.collection('members').doc('Class').collection('members').add({
+    regno, firstName, lastName, remark,
+    attendance: { total:0, P:0, AC:0, A:0 }
+  }).then(()=> {
+    addRegNo.value=''; addFirstName.value=''; addLastName.value=''; addRemark.value='';
+    loadMembers();
+  });
+};
+
+// Delete member
+document.querySelector('#membersTable').addEventListener('click', e => {
+  if(e.target.className==='deleteBtn') {
+    if(currentUserRole!=='admin') return;
+    const id= e.target.dataset.id;
+    if(confirm('Delete this member?')){
+      db.collection('members').doc('Class').collection('members').doc(id).delete().then(loadMembers);
+    }
+  }
+  if(e.target.className==='editBtn') {
+    if(currentUserRole!=='admin') return;
+    const id= e.target.dataset.id;
+    const row= e.target.closest('tr');
+    const regno= row.children[1].innerText;
+    const firstName= row.children[2].innerText;
+    const lastName= row.children[3].innerText;
+    const remark= row.children[4].innerText;
+    const newRegNo= prompt('Reg No:', regno);
+    const newFirstName= prompt('First Name:', firstName);
+    const newLastName= prompt('Last Name:', lastName);
+    const newRemark= prompt('Remark:', remark);
+    if(newRegNo && newFirstName && newLastName){
+      db.collection('members').doc('Class').collection('members').doc(id).update({
+        regno: newRegNo,
+        firstName: newFirstName,
+        lastName: newLastName,
+        remark: newRemark
+      }).then(loadMembers);
+    }
+  }
+});
+
+// Function to handle editing attendance counts
+function editAttendanceCount(memberId, type) {
+  if(currentUserRole !== 'admin') return;
+  const newCountStr= prompt(`Enter new count for ${type}:`);
+  const newCount= parseInt(newCountStr);
+  if(isNaN(newCount) || newCount<0) {
+    alert('Invalid number');
+    return;
+  }
+
+  const memberRef= db.collection('members').doc('Class').collection('members').doc(memberId);
+  memberRef.get().then(doc => {
+    if(!doc.exists) return;
+    const data= doc.data();
+    const attendance= data.attendance || { total:0, P:0, AC:0, A:0 };
+    const counts= { P: attendance.P || 0, AC: attendance.AC || 0, A: attendance.A || 0 };
+
+    // Set the specific count
+    if(type==='P') {
+      counts.P= newCount;
+    } else if(type==='AC') {
+      counts.AC= newCount;
+    } else if(type==='A') {
+      counts.A= newCount;
+    }
+
+    const totalCount= counts.P + counts.AC + counts.A;
+    const newAttendance= {
+      total: totalCount,
+      P: counts.P,
+      AC: counts.AC,
+      A: counts.A
+    };
+
+    memberRef.update({attendance: newAttendance}).then(() => {
+      loadMembers();
+    });
+  });
+}
+
+// Handle editing message
+function handleEditMessage(msgId) {
+  if(currentUserRole!=='admin' && currentUserRole!=='user') return;
+  const newMsg= prompt('Edit message:');
+  if(newMsg!==null) {
+    firebase.firestore().collection('notices').doc(msgId).update({ message: newMsg }).then(() => {
+      loadnotices();
+    });
+  }
+}
+
+// Handle delete message
+function handleDeleteMessage(msgId) {
+  if(currentUserRole!=='admin' && currentUserRole!=='user') return;
+  if(confirm('Delete this message?')){
+    firebase.firestore().collection('notices').doc(msgId).delete().then(() => {
+      loadnotices();
+    });
+  }
+}
+
+// Event delegation for message actions
+document.getElementById('noticesContainer').addEventListener('click', e => {
+  if(e.target.classList.contains('editMsg')) {
+    const msgId= e.target.dataset.id;
+    handleEditMessage(msgId);
+  }
+  if(e.target.classList.contains('delMsg')) {
+    const msgId= e.target.dataset.id;
+    handleDeleteMessage(msgId);
+  }
+});
+</script>
+</body>
+</html>

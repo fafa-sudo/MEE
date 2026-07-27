@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PAST PAPER EXAM</title>
+<link rel="icon" href="images/mat.png" type="image/png" />
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+/* Global box-sizing for better sizing control */
+* {
+  box-sizing: border-box;
+}
+
+/* Body styling for overall padding and font */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+/* Header styles */
+ h1 {
+    background-color: #6633CC;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+h3 {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #222;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 8px;
+  max-width: 100%;
+}
+
+/* Main timetable container with responsive width */
+.timetable {
+   background-image: url('images/rp.png');
+  background-size: cover;
+  background-position: center;
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  max-width: 100%;
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Container for top buttons, using flexbox for responsiveness */
+.top-buttons-container {
+   background-image:linear-gradient(#E8E9E6);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  margin: 0 auto 20px auto;
+  padding: 0 30px;
+  border-radius: 10px;
+  flex-wrap: wrap; /* Wrap on small screens */
+}
+
+/* Back button style */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #1d09f9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.back-button:hover {
+  background-color: #a31df6;
+  transform: translateY(-2px);
+}
+
+.back-button .arrow {
+  font-size: 1.2em;
+  margin-right: 8px;
+}
+
+/* Logout button styles */
+#logoutBtn {
+  padding: 12px 24px;
+  font-size: 1.2em;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+#logoutBtn:hover {
+  background-color: #a71d2a;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+/* Data section styles */
+#dataSection {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 100%;
+  width: 100%;
+  margin: 30px auto;
+}
+
+/* Upload section styles */
+#uploadSection {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  max-width: 600px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Headings inside data section */
+#dataSection h2 {
+  font-family: 'Arial', sans-serif;
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  color: #222;
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Input fields styling with responsiveness */
+#dataSection input[type="text"],
+#dataSection input[type="file"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 12px;
+  margin: 10px auto;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#dataSection input[type="text"]:focus,
+#dataSection input[type="file"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0,123,255,0.2);
+}
+
+/* Upload button styling with responsiveness */
+#uploadBtn {
+  display: block;
+  margin: 15px auto;
+  padding: 12px 24px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 200px;
+  width: 100%;
+}
+
+#uploadBtn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Horizontal rule styling */
+#uploadSection hr {
+  margin: 20px 0;
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+}
+
+/* Style for "Names and Images" header inside data section */
+#dataSection h2:nth-of-type(2) {
+  margin-top: 20px;
+  font-size: 2em;
+  color: #333;
+  text-align: center;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Images container styles - responsive layout */
+#imagesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  width: 100%;
+  overflow: auto;
+}
+
+/* Individual item styles */
+#imagesContainer .item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5px;
+  padding: 5px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s, transform 0.3s;
+  max-width: 100%;
+  width: 95%;
+}
+
+/* Name text inside items */
+#imagesContainer .item p {
+  font-weight: bold;
+  text-align: center;
+  background: #6885ac;
+  margin-bottom: 15px;
+  width: 100%;
+  font-size: 1.1em;
+  padding: 10px;
+}
+
+/* Image styles inside items */
+#imagesContainer .item img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-bottom: 10px;
+}
+
+#imagesContainer .item img:hover {
+  transform: scale(1.005);
+}
+
+/* Admin buttons container inside each item */
+#imagesContainer .admin-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Admin button styles */
+#imagesContainer .admin-buttons button {
+  padding: 6px 12px;
+  font-size: 0.9em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 80px;
+}
+
+/* Specific styles for edit and delete buttons */
+#imagesContainer .admin-buttons button:nth-child(1) {
+  background-color: #007bff;
+  color: #fff;
+}
+#imagesContainer .admin-buttons button:nth-child(1):hover {
+  background-color: #3b83d0;
+}
+
+#imagesContainer .admin-buttons button:nth-child(2) {
+  background-color: #dc3545;
+  color: #fff;
+}
+#imagesContainer .admin-buttons button:nth-child(2):hover {
+  background-color: #50272b;
+}
+
+/* Hover effect on entire item for UX */
+#imagesContainer .item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+/* Container for top buttons, using flexbox for responsiveness */
+.top-buttons-container {
+   background-image:linear-gradient(#E8E9E6);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  margin: 0 auto 20px auto;
+  padding: 0 30px;
+  border-radius: 10px;
+  flex-wrap: wrap; /* Wrap on small screens */
+}
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #1d09f9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.back-button:hover {
+  background-color: #a31df6;
+  transform: translateY(-2px);
+}
+
+.back-button .arrow {
+  font-size: 1.2em;
+  margin-right: 8px;
+}
+
+/* Logout button styles */
+#logoutBtn {
+  padding: 12px 24px;
+  font-size: 1.2em;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+#logoutBtn:hover {
+  background-color: #a71d2a;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+/* Container for the navigation */
+.mynav {
+  background-color: #333; /* Dark background */
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+/* Remove default list styles and set layout */
+.mynav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Horizontal layout */
+}
+
+/* Style for each dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Style for the link buttons */
+.dropdown li a {
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: block;
+  background-color: #444; /* Slightly lighter on hover */
+  transition: background-color 0.3s;
+}
+
+.dropdown li a:hover {
+  background-color: #555; /* Hover effect */
+}
+
+/* Style for the dropdown menu (if you add submenus) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #444;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block; /* Show on hover */
+}
+
+/* Optional: Style for the list items inside dropdown */
+.dropdown-content a {
+  padding: 12px 16px;
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #555;
+}
+/* Style for the menu link */
+#menu1 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #3498db; /* Blue background */
+  color: white;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  border-radius: 4px;
+  position: relative; /* For positioning icon if needed */
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+#menu1:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+  cursor: pointer;
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Add dropdown icon using ::after pseudo-element */
+#menu1::after {
+  content: "▼"; /* Unicode for down arrow */
+  font-size: 0.7em;
+  margin-left: 8px;
+  vertical-align: middle;
+  transition: transform 0.3s;
+}
+
+/* Optional: animate icon on hover (like rotating) */
+#menu1:hover::after {
+  transform: rotate(180deg);
+}
+/* Style for each item container for paper-like appearance */
+.item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0; /* spacing between items */
+  padding: 0; /* no padding to make it look like one paper */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden; /* ensure no overflow */
+}
+
+/* Style for the image to fit as one paper */
+.item img {
+  width: 80px; /* or any size suitable */
+  height: auto;
+  display: block;
+  object-fit: cover;
+  flex-shrink: 0; /* prevent shrinking */
+}
+
+/* Style for the name label on the left with margin */
+.item p {
+  margin-left: 15px; /* space between image and text */
+  font-weight: bold;
+  font-size: 1.2em; /* make it clear and prominent */
+  margin: 0; /* remove default margin if any */
+}
+</style>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="timetable">
+    <h1>PAST PAPER EXAM</h1>
+    <div class="top-buttons-container">
+      <button class="back-button" onclick="goBack()">
+        <span class="arrow">&larr;</span> Back
+      </button>
+      <button class="logout" id="logoutBtn" style="display:none;">Logout</button>
+      
+    </div>
+  </div>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+<!-- drop down nav buttons -->
+<div class="mynav">
+  <ul>
+    <li class="dropdown">
+      <a href="#" id="menu1">TIMETABLE</a>
+      <div class="dropdown-content">
+        <a href="image.html"><i class="fas fa-image"></i> Timetable</a>
+          <a href="dutystatus.html"><i class="fas fa-info-circle"></i> Dutystatus</a>
+        <a href="onlinequiz.html"><i class="fas fa-question-circle"></i>OnlineQuiz</a>
+      </div>
+    </li>
+  </ul>
+</div>
+<!-- announcementgs -->
+ <h2>Notices</h2>
+<div id="noticesContainer" style="
+  border: 2px solid #4CAF50; /* border color */
+  border-radius: 10px; /* rounded corners */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* shadow for depth */
+  background-color: #e8f5e9; /* soft background color */
+  padding: 15px; /* inner padding */
+  max-width: 100%; /* full width */
+  margin-bottom: 20px; /* spacing below */
+  font-family: Arial, sans-serif; /* font style */
+  font-size: 16px; /* font size */
+  color: #333; /* text color */
+  min-height: 50px; /* minimum height for consistency */
+">
+  <!-- Notices will be inserted here by JavaScript -->
+  <div id="noticesContent"></div>
+</div>
+
+<script>
+function loadNotices() {
+  firebase.firestore().collection('notices').onSnapshot(snap => {
+    const noticesDiv = document.getElementById('noticesContent');
+    noticesDiv.innerHTML = ''; // Clear previous notices
+    const notices = [];
+    snap.forEach(doc => {
+      const data = doc.data();
+      notices.push(data.message);
+    });
+    if (notices.length === 0) {
+      noticesDiv.innerHTML = '<em>No notices at the moment.</em>';
+    } else {
+      // Display notices as a list
+      notices.forEach(msg => {
+        const p = document.createElement('p');
+        p.style.margin = '8px 0'; // spacing between notices
+        p.innerText = msg;
+        noticesDiv.appendChild(p);
+      });
+    }
+  });
+}
+
+// Call on page load
+window.onload = loadNotices;
+</script>
+ <!-- end of announcement -->
+<div id="dataSection">
+  <!-- Upload section (shown for admin) -->
+  <div id="uploadSection" style="display:none;">
+    <h2>Upload Name and Image (Admin only)</h2>
+    <input type="text" id="nameInput" placeholder="Enter name" />
+    <br/><br/>
+    <input type="file" id="imageInput" accept="image/*" />
+    <br/><br/>
+    <button id="uploadBtn">Upload</button>
+    <hr/>
+  </div>
+
+  <h2>PAST PAPER EXAM</h2>
+  <div id="imagesContainer"></div>
+</div>
+<!-- Footer with About Us and WhatsApp -->
+<footer style="background-color:#222; color:#fff; padding:30px 20px; text-align:center; font-family:Arial, sans-serif;">
+  <!-- Social Media Icons -->
+  <div style="margin-bottom:15px;">
+    <a href="" target="_blank" style="margin:0 10px; font-size:24px; color:#25D366;">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="" target="_blank" style="margin:0 10px; font-size:24px; color:#1DA1F2;">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="" target="_blank" style="margin:0 10px; font-size:24px; color:#3b5998;">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="" target="_blank" style="margin:0 10px; font-size:24px; color:#C13584;">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="" target="_blank" style="margin:0 10px; font-size:24px; color:#0077B5;">
+      <i class="fab fa-linkedin-in"></i>
+    </a>
+  </div>
+  <!-- Contact Info -->
+  <div style="margin-bottom:15px;">
+    <p style="margin:5px 0;">Contact us: <a href="tel:+250XXXXXXXX" style="color:#fff; text-decoration:none;">+250 788888800</a></p>
+    <p style="margin:5px 0;">Email: <a href="mailto:info@gmail.com" style="color:#fff; text-decoration:none;">meemt@gmail.com</a></p>
+  </div>
+  <!-- Copyright -->
+  <div style="font-size:0.9em;">
+    &copy; 2026 MEE MT. All rights reserved.
+  </div>
+</footer>
+<script>
+  // Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBGeMNLIzAlTfEHghPGPgo24gQIgktTlrE",
+  authDomain: "onduty-8798e.firebaseapp.com",
+  projectId: "onduty-8798e",
+  storageBucket: "onduty-8798e.appspot.com",
+  messagingSenderId: "687490679953",
+  appId: "1:687490679953:web:a3d293c0acf0a3cd322b30"
+};
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  // DOM elements
+  const dataSection = document.getElementById('dataSection');
+  const imagesContainer = document.getElementById('imagesContainer');
+  const uploadSection = document.getElementById('uploadSection');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const nameInput = document.getElementById('nameInput');
+  const imageInput = document.getElementById('imageInput');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  let currentUser = null;
+  let role = null;
+
+  // Check login on load
+  window.onload = () => {
+    checkLogin();
+  };
+
+  function checkLogin() {
+    const email = localStorage.getItem('userEmail');
+    role = localStorage.getItem('role');
+
+    if (!role || !email) {
+      // Not logged in, redirect to login
+      window.location.href='index.html';
+      return;
+    }
+    // Logged in
+    currentUser = email;
+
+    // Show logout button
+    logoutBtn.style.display='block';
+
+    // Show data section
+    dataSection.style.display='block';
+
+    // Show/hide upload section based on role
+    if (role === 'admin') {
+      document.getElementById('uploadSection').style.display='block';
+    } else {
+      document.getElementById('uploadSection').style.display='none';
+    }
+
+    loadData();
+  }
+
+  // Load data from Firestore
+  async function loadData() {
+    imagesContainer.innerHTML = '';
+    const q = firebase.firestore().collection('exam').orderBy('timestamp', 'desc');
+    const querySnapshot = await q.get();
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const div = document.createElement('div');
+      div.className = 'item';
+
+ // Compose innerHTML for item
+div.innerHTML = `
+  <div class="item">
+    <p style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      ${data.name}
+    </p>
+    <img src="${data.imageUrl}" alt="${data.name}" />
+  </div>
+  ${role === 'admin' ? `
+  <div class="admin-buttons">
+      <button onclick="handleEdit('${doc.id}', '${data.name}', '${data.imageUrl}')">Edit</button>
+      <button onclick="handleDelete('${doc.id}')">Delete</button>
+  </div>
+  ` : ''}
+`;
+      // Append to container
+      imagesContainer.appendChild(div);
+    });
+  }
+  //download function
+  function downloadImage(url, name) {
+  fetch(url)
+    .then(resp => {
+      if (!resp.ok) throw new Error('Network response was not ok');
+      return resp.blob();
+    })
+    .then(blob => {
+      const urlBlob = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlBlob;
+      a.download = name || 'download';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(urlBlob);
+    })
+    .catch((err) => {
+      alert('Failed to download image: ' + err.message);
+    });
+}
+  // Logout
+  document.getElementById('logoutBtn').onclick = () => {
+    localStorage.removeItem('role');
+    localStorage.removeItem('userEmail');
+    auth.signOut();
+    window.location.href='index.html';
+  };
+
+  // Upload handler (admin only)
+  document.getElementById('uploadBtn').onclick = async () => {
+    if (role !== 'admin') {
+      alert('Only admin can upload.');
+      return;
+    }
+    const name = nameInput.value.trim();
+    const file = imageInput.files[0];
+    if (!name || !file) {
+      alert('Please enter a name and select an image.');
+      return;
+    }
+    try {
+      const storageRef = storage.ref('images/' + Date.now() + '_' + file.name);
+      await storageRef.put(file);
+      const url = await storageRef.getDownloadURL();
+
+      await firebase.firestore().collection('exam').add({
+        name: name,
+        imageUrl: url,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert('Uploaded successfully!');
+      nameInput.value = '';
+      imageInput.value = '';
+      loadData();
+    } catch (err) {
+      alert('Error uploading: ' + err.message);
+    }
+  };
+
+  // Handle delete
+  async function handleDelete(docId) {
+    if (role !== 'admin') {
+      alert('Only admin can delete.');
+      return;
+    }
+    if (confirm('Are you sure you want to delete?')) {
+      try {
+        await firebase.firestore().collection('exam').doc(docId).delete();
+        loadData();
+      } catch (err) {
+        alert('Error deleting: ' + err.message);
+      }
+    }
+  }
+//edit function
+async function handleEdit(docId, currentName, currentImageUrl) {
+  if (role !== 'admin') {
+    alert('Only admin can edit.');
+    return;
+  }
+
+  const newName = prompt('Enter new name:', currentName);
+  if (!newName || newName.trim() === '') {
+    return; // Cancel if no name provided
+  }
+
+  const newImageUrl = prompt('Enter new image URL:', currentImageUrl);
+  if (!newImageUrl || newImageUrl.trim() === '') {
+    return; // Cancel if no image URL provided
+  }
+
+  try {
+    await firebase.firestore().collection('exam').doc(docId).update({
+      name: newName.trim(),
+      imageUrl: newImageUrl.trim()
+    });
+    loadData(); // Refresh data to reflect changes
+  } catch (err) {
+    alert('Error updating: ' + err.message);
+  }
+}
+</script>
+<script src="firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
+</body>
+</html>

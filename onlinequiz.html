@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz Dashboard</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background-color: rgba(255,255,255,0.8);
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #333;
+  }
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  .buttons-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  button {
+    padding: 12px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+  .back-btn {
+    background-color: #555;
+    color: #fff;
+  }
+  .back-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
+  .logout-btn {
+    background-color: #e74c3c;
+    color: #fff;
+  }
+  .logout-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+  }
+  /* Quiz container styling */
+  .container {
+    background-color: #fff;
+    padding: 50px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: #444;
+  }
+  /* Quiz links always visible */
+  a.quiz-btn {
+    display: inline-block;
+    margin: 20px;
+    padding: 20px 40px;
+    font-size: 1.3em;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+  }
+  a.quiz-btn:hover {
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  }
+  /* Style for unavailable quizzes */
+  a.quiz-btn.unavailable {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  /* Toggle button style */
+  #toggleButtons {
+    display: none; /* Hidden by default, shown only for admin in JS */
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  .toggle-btn {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #27ae60;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+  /* Admin controls visibility */
+  #adminControls {
+    display: none; /* Hidden by default, shown only for admin */
+    margin-top: 20px;
+  }
+  #adminControls h3 {
+    margin-bottom: 10px;
+  }
+  #adminControls div {
+    margin-bottom: 10px;
+  }
+  #adminControls input {
+    padding: 8px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  #adminControls button {
+    padding: 8px 12px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2980b9;
+    color: #fff;
+    cursor: pointer;
+  }
+  #adminControls button:hover {
+    background-color: #3498db;
+  }
+  footer {
+  background-color: #222; /* Dark background */
+  color: #fff;            /* White text */
+  padding: 20px 0;        /* Vertical padding */
+  text-align: center;     /* Centered text */
+  font-size: 14px;        /* Slightly smaller text */
+  position: relative;     /* To allow positioning if needed */
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.3); /* subtle shadow on top */
+}
+
+footer p {
+  margin: 0; /* Remove default margin */
+  font-family: Arial, sans-serif; /* Optional: font style */
+}
+  /* Responsive adjustments if needed */
+</style>
+</head>
+<body>
+<header>
+  <h1>Welcome to the Quiz Dashboard</h1>
+</header>
+<div class="main">
+  <!-- Control buttons -->
+  <div class="buttons-container">
+    <button class="back-btn" onclick="history.back()">Back</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+  <!-- Quiz section -->
+  <div class="container" id="quizContainer">
+    <h2>Select a Quiz</h2>
+    <!-- Always visible quiz links -->
+    <a href="#" class="quiz-btn" id="quiz1Btn">Online Quiz1</a>
+    <a href="#" class="quiz-btn" id="quiz2Btn">Online Quiz2</a>
+    <!-- Toggle buttons for admin -->
+    <div id="toggleButtons">
+      <button class="toggle-btn" onclick="toggleQuiz('quiz1')">Toggle Quiz1</button>
+      <button class="toggle-btn" onclick="toggleQuiz('quiz2')">Toggle Quiz2</button>
+    </div>
+    <!-- Admin controls for setting passwords -->
+    <div id="adminControls">
+      <h3>Admin Password Settings</h3>
+      <div>
+        <label>Quiz1 Password:</label>
+        <input type="password" id="quiz1PasswordInput" placeholder="Set password for Quiz1" />
+        <button onclick="setPassword('quiz1')">Set Quiz1 Password</button>
+      </div>
+      <div>
+        <label>Quiz2 Password:</label>
+        <input type="password" id="quiz2PasswordInput" placeholder="Set password for Quiz2" />
+        <button onclick="setPassword('quiz2')">Set Quiz2 Password</button>
+      </div>
+    </div>
+    <!-- Messages for each quiz -->
+    <div style="margin-top:20px;">
+      <p id="quiz1Message"></p>
+      <p id="quiz2Message"></p>
+    </div>
+  </div>
+</div>
+<footer>
+  <p>&copy; 2025 classmeemt.com All rights reserved.</p>
+</footer>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGeMNLIzAlTfEHghPGPgo24gQIgktTlrE",
+    authDomain: "onduty-8798e.firebaseapp.com",
+    projectId: "onduty-8798e",
+    storageBucket: "onduty-8798e.appspot.com",
+    messagingSenderId: "687490679953",
+    appId: "1:687490679953:web:147c184e7f7d96f1322b30",
+    databaseURL: "https://onduty-8798e-default-rtdb.firebaseio.com"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  window.onload = () => {
+    const role = localStorage.getItem('role');
+    const email = localStorage.getItem('userEmail');
+
+    if (!role || !email) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // Show admin controls only if the user is admin
+    if (role === 'admin') {
+      document.getElementById('adminControls').style.display = 'block';
+      document.getElementById('toggleButtons').style.display = 'flex';
+    } else {
+      document.getElementById('adminControls').style.display = 'none';
+      document.getElementById('toggleButtons').style.display = 'none';
+    }
+
+    loadQuizStates();
+  };
+
+  // Load quiz availability states
+function loadQuizStates() {
+  const quizRef = db.ref('quizzes');
+  quizRef.once('value').then(snapshot => {
+    const quizzes = snapshot.val() || {};
+    // For quiz1
+    if (quizzes.quiz1 !== undefined) {
+      setQuizStatus('quiz1', quizzes.quiz1);
+    } else {
+      setQuizStatus('quiz1', true);
+    }
+    // For quiz2
+    if (quizzes.quiz2 !== undefined) {
+      setQuizStatus('quiz2', quizzes.quiz2);
+    } else {
+      setQuizStatus('quiz2', true);
+    }
+  });
+}
+
+// Update quiz button/status appearance
+function setQuizStatus(quiz, isAvailable) {
+  const btn = document.getElementById(quiz + 'Btn');
+  const msgId = quiz + 'Message';
+  let messageElement = document.getElementById(msgId);
+
+  if (!messageElement) {
+    messageElement = document.createElement('p');
+    messageElement.id = msgId;
+    document.querySelector('#quizContainer').appendChild(messageElement);
+  }
+
+  if (isAvailable) {
+    messageElement.innerText = `${quiz.charAt(0).toUpperCase() + quiz.slice(1)} is available!`;
+    messageElement.style.color = 'green';
+    btn.classList.remove('unavailable');
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+  } else {
+    messageElement.innerText = `${quiz.charAt(0).toUpperCase() + quiz.slice(1)} is unavailable.`;
+    messageElement.style.color = 'red';
+    btn.classList.add('unavailable');
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.5';
+  }
+}
+
+// Toggle quiz availability
+function toggleQuiz(quiz) {
+  const quizRef = db.ref('quizzes/' + quiz);
+  quizRef.once('value').then(snapshot => {
+    const currentStatus = snapshot.val() !== null ? snapshot.val() : true; // default true
+    const newStatus = !currentStatus;
+    quizRef.set(newStatus).then(() => {
+      setQuizStatus(quiz, newStatus);
+    }).catch(error => {
+      console.error("Error updating quiz status:", error);
+    });
+  }).catch(error => {
+    console.error("Error toggling quiz:", error);
+  });
+}
+
+// Set password for a quiz (admin only)
+function setPassword(quiz) {
+  if (localStorage.getItem('role') !== 'admin') {
+    alert('Only admin can set passwords.');
+    return;
+  }
+  const passwordInputId = quiz + 'PasswordInput';
+  const passwordInput = document.getElementById(passwordInputId);
+  const password = passwordInput.value.trim();
+  const quizRef = db.ref('quizzes/' + quiz);
+  quizRef.update({
+    [`${quiz}Password`]: password
+  }).then(() => {
+    alert(`${quiz} password set successfully.`);
+  }).catch(error => {
+    console.error("Error setting password:", error);
+  });
+}
+
+// Handle user clicking on quiz link
+document.getElementById('quiz1Btn').addEventListener('click', () => {
+  handleQuizAccess('quiz1', 'Quiz1');
+});
+document.getElementById('quiz2Btn').addEventListener('click', () => {
+  handleQuizAccess('quiz2', 'Quiz2');
+});
+
+function handleQuizAccess(quiz, displayName) {
+  const quizRef = db.ref('quizzes/' + quiz);
+  quizRef.once('value').then(snapshot => {
+    const data = snapshot.val() || {};
+    const password = data[quiz + 'Password'] || '';
+
+    if (password) {
+      const input = prompt(`Enter password for ${displayName}:`);
+      if (input === password) {
+        window.location.href = `${quiz}.html`;
+      } else {
+        alert('Incorrect password!');
+      }
+    } else {
+      window.location.href = `${quiz}.html`;
+    }
+  }).catch(error => {
+    console.error("Error fetching quiz data:", error);
+  });
+}
+
+// Logout function
+function logout() {
+  localStorage.clear();
+  firebase.auth().signOut().then(() => {
+    window.location.href = 'index.html';
+  }).catch(error => {
+    console.error("Error signing out:", error);
+  });
+}
+</script>
+</body>
+</html>

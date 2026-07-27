@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Online Quiz Platform</title>
+<link rel="icon" href="images/mat.png" type="image/png" />
+<link rel="stylesheet" href="styles.css" />
+<!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<style>
+/* Basic styles for layout and components */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: linear-gradient(135deg, #f0f2f5, #cfd8dc);
+  color: #333;
+}
+h1 {
+  text-align: center;
+  color: #222;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+#authSection, #userInfo, #quizSection, #adminSection {
+  margin-bottom: 30px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s, transform 0.2s;
+}
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="datetime-local"] {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  width: calc(50% - 20px);
+}
+#questionsContainer {
+  margin-top: 20px;
+}
+.item {
+  background:#f9f9f9;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+#timerDisplay {
+  font-size: 1.5em;
+  color: #d32f2f;
+  margin-top: 10px;
+  font-weight: bold;
+  display: none;
+}
+#answeredCount {
+  margin-top: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+#resultSection {
+  display:none;
+  margin-top:20px;
+  padding:15px;
+  background:#d4edda;
+  border-radius:8px;
+  font-size:1.2em;
+}
+#adminResults {
+  display:none;
+  margin-top:20px;
+  padding:10px;
+  background:#fff;
+  border-radius:8px;
+  max-height:300px;
+  overflow-y:auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid #ccc;
+}
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+.action-btn {
+  padding: 5px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+.edit-btn {
+  background-color: #2196F3;
+}
+.edit-btn:hover {
+  background-color: #0b7dda;
+  transform: scale(1.05);
+}
+.delete-btn {
+  background-color: #f44336;
+}
+.delete-btn:hover {
+  background-color: #da190b;
+  transform: scale(1.05);
+}
+.top-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  margin: 0 auto 20px auto;
+  padding: 0 30px;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #1d09f9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+}
+.back-button:hover {
+  background-color: #a31df6;
+  transform: translateY(-2px);
+}
+.back-button .arrow {
+  font-size: 1.2em;
+  margin-right: 8px;
+}
+#logoutBtn {
+  padding: 12px 24px;
+  font-size: 1.2em;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+#logoutBtn:hover {
+  background-color: #8d3e4a;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+#messageDiv {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-align: center;
+}
+#messageDiv.available {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+#messageDiv.not-available {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.mynav {
+  background-color: #221f25;
+  padding: 10px;
+}
+.mynav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown li a {
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: block;
+  background-color: #444;
+}
+.dropdown li a:hover {
+  background-color: #555;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #444;
+  min-width: 160px;
+  z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown-content a {
+  padding: 12px 16px;
+  color: white;
+}
+#menu1 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 4px;
+  position: relative;
+  transition: background-color 0.3s, transform 0.2s;
+}
+#menu1:hover {
+  background-color: #2980b9;
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+#menu1::after {
+  content: "▼";
+  font-size: 0.7em;
+  margin-left: 8px;
+  vertical-align: middle;
+  transition: transform 0.3s;
+}
+#menu1:hover::after {
+  transform: rotate(180deg);
+}
+label {
+  font-size: 1.2em;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+  font-family: Arial, sans-serif;
+}
+/* Additional style for review section: */
+#reviewSection {
+  display: none;
+  padding: 20px;
+  background: #f0f0f0;
+  margin-top: 20px;
+  border-radius: 8px;
+  max-height: 620px;
+  overflow-y: auto;
+}
+#questionsReviewContainer {
+  max-height: 600px;
+  overflow-y: auto;
+}
+/* Button styles */
+button.viewresults {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+button.viewresults:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+/* Selected state */
+button.viewresults.selected {
+  background-color: #ff9800; /* Or any color you prefer */
+}
+/* Basic reset for list styles */
+.mynav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the navigation container */
+.mynav {
+  background-color: #333; /* Dark background for nav */
+  padding: 10px 20px;
+}
+
+/* Style the list items */
+.mynav li {
+  display: inline-block;
+  position: relative;
+}
+
+/* Style the main links */
+.mynav a {
+  color: #fff; /* White text */
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s;
+}
+
+.mynav a:hover {
+  background-color: #555; /* Hover effect */
+}
+
+/* Style for dropdown content */
+.dropdown-content {
+  display: none; /* Hidden by default */
+  position: absolute;
+  background-color: #444; /* Slightly lighter background */
+  min-width: 180px;
+  z-index: 1;
+  top: 100%; /* Position below parent */
+  left: 0;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Style links inside dropdown */
+.dropdown-content a {
+  padding: 10px 15px;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: #666;
+}
+
+/* Optional: style icons inside links */
+.dropdown-content a i {
+  margin-right: 8px;
+}
+/* Footer styling */
+footer {
+  background-color: #222; /* Dark background */
+  color: #fff; /* White text */
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  border-top: 4px solid #4CAF50; /* Optional: a colored border on top */
+}
+
+/* Style for the quote */
+footer p.quote {
+  margin-top: 10px;
+  font-style: italic;
+  font-size: 1.1em;
+  line-height: 1.4;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<h1>Online Quiz Platform&nbsp; - &nbsp;<span class="quiz-span">Quiz1</span></h1>
+
+<div class="top-buttons-container">
+  <button class="back-button" onclick="goBack()">
+    <span class="arrow">&larr;</span> Back
+  </button>
+  <button class="logout" id="logoutBtn" onclick="logoutAndRedirect()">🚪 Logout</button>
+</div>
+<!-- Navigation -->
+<div class="mynav">
+
+<!-- Timetable Menu -->
+<div class="dropdown" style="--color: #9C27B0;">
+  <a href="#" id="timetableMenu"><i class="fas fa-calendar-alt"></i> Timetable & Conduct</a>
+  <div class="dropdown-content">
+    <a href="image.html"><i class="fas fa-image"></i> Timetable</a>
+    <a href="conduct.html"><i class="fas fa-gavel"></i> Conduct</a>
+    <a href="rpsystem.html"><i class="fas fa-gamepad"></i> RP System</a>
+  </div>
+</div>
+ <!-- quiz Menu -->
+  <div class="dropdown" style="--color: #223760;">
+  <a href="#" id="ondutyMenu"><i class="fas fa-user-shield"></i>OnlineQuiz & Past Exam</a>
+   <div class="dropdown-content">
+      <a href="onlinequiz.html"><i class="fas fa-question-circle"></i> OnlineQuiz</a>
+     <a href="exam.html"><i class="fas fa-question-circle"></i>Past Exam</a>
+    <a href="dutystatus.html"><i class="fas fa-info-circle"></i> Dutystatus</a>
+   </div>
+</div>
+</div>
+
+<!-- Authentication -->
+<div id="authSection"></div>
+
+<!-- User info & admin -->
+<div id="userInfo"></div>
+
+<!-- Admin Panel -->
+<div id="adminSection" style="display:none;">
+  <h2>🛠️ Admin Panel</h2>
+  <div style="margin-bottom:10px;">
+    <input type="text" id="questionText" placeholder="Question" />
+    <input type="text" id="optionA" placeholder="Option A" />
+    <input type="text" id="optionB" placeholder="Option B" />
+    <input type="text" id="optionC" placeholder="Option C" />
+    <input type="text" id="optionD" placeholder="Option D" />
+    <input type="text" id="correctOption" placeholder="Correct Option (A, B, C, D)" />
+    <button onclick="addQuestion()">➕ Add Question</button>
+  </div>
+ <!-- Place these buttons appropriately, e.g., inside your admin panel -->
+  <div style="margin-top: 20px;">
+    <button id="deleteQuestionsBtn" style="background-color:#f44336; margin-right:10px;" 
+      onclick="confirmDeleteQuestions()">🗑️ Delete All Questions</button>
+  </div>
+  <h3>📝 Existing Questions</h3>
+  <div id="questionsList"></div>
+  <hr/>
+  <h3>⚙️ Configure Quiz</h3>
+  <div style="margin-bottom:10px;">
+    <label>Quiz Duration (Minutes):</label>
+    <input type="number" id="quizDuration" min="1" />
+  </div>
+  <div style="margin-top:10px;">
+    <label>Available Start Time:</label>
+    <input type="datetime-local" id="startTime"/>
+  </div>
+  <div style="margin-top:10px;">
+    <label>Available End Time:</label>
+    <input type="datetime-local" id="endTime"/>
+  </div>
+  <button onclick="saveQuizSettings()" style="padding:8px 16px;">💾 Save Settings</button>
+
+</div>
+ <button class="viewresults" onclick="toggleAndPerform(this)">Show/Hide All Users Results</button>
+
+<div id="allusers" style="display:none;">
+   <div id="adminResults">
+      <h3>
+       <button id="deleteResultsBtn" style="background-color:#f44336;" 
+      onclick="confirmDeleteResults()">🗑️ Delete All Results</button>&nbsp;&nbsp;
+      📊 All Users' results & Attempts
+    </h3>
+   </div>
+    <div id="resultsTableContainer"></div>
+ </div>
+ </div>
+ <script>
+  // javascripts for toggle users results
+function toggleAllUsers() {
+  const div = document.getElementById('allusers');
+  if (div.style.display === 'none') {
+    div.style.display='block';
+  } else {
+    div.style.display='none';
+  }
+}
+function toggleButtonSelection(button) {
+  button.classList.toggle('selected');
+  // Optional: If you want only one button to be selected at a time,
+  // you can remove 'selected' class from other buttons here.
+}
+function toggleAndPerform(btn) {
+  // Toggle the selected state
+  btn.classList.toggle('selected');
+  // Call your toggle function
+  toggleAllUsers();
+}
+</script>
+<!-- Quiz Section -->
+<div id="quizSection" style="display:none;">
+  <h2>📝 Take the Quiz</h2>
+  <div id="messageDiv"></div>
+  <div id="quizAvailabilityMessage"></div>
+  <div id="nameInputDiv" style="margin-bottom:10px;">
+    <label>Enter Your Name and RegNo: </label>
+    <input type="text" id="userName" placeholder="First Name and regno"/>
+  </div>
+  <div id="timerDisplay"></div>
+  <div id="answeredCount"></div>
+  <div id="questionsContainer"></div>
+  <button id="startQuizBtn" onclick="startQuiz()">🚀 Start Quiz</button>
+  <button onclick="finishQuiz()" style="display:none;" id="finishBtn">✔️ Finish</button>
+  <div style="margin-top:10px;">
+    <button onclick="prevPage()" disabled id="prevBtn">Previous</button>
+    <button onclick="nextPage()" id="nextBtn">Next</button>
+  </div>
+</div>
+<!-- Result display after quiz -->
+<div id="resultSection"></div>
+<!-- toggle visibility questions -->
+<button id="toggleReviewBtn" onclick="toggleReview()">Show Questions & Answers</button>
+
+<div id="reviewSection" style="display:none;">
+  <h3>Review: Questions & Correct Answers</h3>
+  <div id="questionsReviewContainer"></div>
+  <div id="userScoreReview" style="margin-top:15px; font-weight:bold;"></div>
+</div>
+
+<p id="centeredMessage" class="centered-message"></p>
+<footer>
+  <p>&copy; 2025 classmeemt.com All rights reserved.</p>
+  <p class="advice">"Consistent effort and smart study techniques are the keys to unlocking your full potential and achieving success."</p>
+</footer>
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGeMNLIzAlTfEHghPGPgo24gQIgktTlrE",
+    authDomain: "onduty-8798e.firebaseapp.com",
+    projectId: "onduty-8798e",
+    storageBucket: "onduty-8798e.appspot.com",
+    messagingSenderId: "687490679953",
+    appId: "1:687490679953:web:147c184e7f7d96f1322b30"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let isAdmin = false;
+  let questions = [];
+  let userAnswers = {};
+  let quizSettings = { durationMinutes: 20 };
+  let countdownInterval = null;
+  let startTime = 0;
+  let totalSecondsRemaining = 0;
+  let currentPage = 0;
+  const questionsPerPage = 5;
+  let totalPages = 0;
+  const adminEmail = "admin@gmail.com";
+  const otherusers = "meemat@gmail.com";
+
+ // --- Auth state ---
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    loadUserProfile().then(() => {
+      updateAdminButtonsVisibility();
+    });
+  } else {
+    resetUI();
+    // Also hide admin buttons when logged out
+    updateAdminButtonsVisibility();
+  }
+});
+
+  function goBack() {
+    window.history.back();
+  }
+
+  function logoutAndRedirect() {
+    auth.signOut().then(() => {
+      window.location.href='index.html';
+    });
+  }
+  //visibility of delete all questions and results
+function updateAdminButtonsVisibility() {
+  const deleteQuestionsBtn = document.getElementById('deleteQuestionsBtn');
+  const deleteResultsBtn = document.getElementById('deleteResultsBtn');
+  if (isAdmin) {
+    deleteQuestionsBtn.style.display='inline-block';
+    deleteResultsBtn.style.display='inline-block';
+  } else {
+    deleteQuestionsBtn.style.display='none';
+    deleteResultsBtn.style.display='none';
+  }
+}
+
+  function loadUserProfile() {
+    db.collection('users').doc(currentUser.uid).get().then(doc => {
+      if (doc.exists || currentUser.email===adminEmail) {
+        isAdmin= false;
+        if(currentUser.email===adminEmail) isAdmin=true;
+        else if (doc.exists && doc.data().isAdmin) isAdmin=true;
+        document.getElementById('userInfo').innerText= `Logged in as: ${currentUser.email} (${isAdmin?'Admin':'User'})`;
+        document.getElementById('authSection').style.display='none';
+        document.getElementById('quizSection').style.display='block';
+
+        if (isAdmin) {
+          document.getElementById('adminSection').style.display='block';
+          loadQuestions();
+          loadQuizSettings();
+          loadResults();
+        }
+        //codes for displaying results for getting results
+          else if(!isAdmin){
+           document.getElementById('adminResults').style.display='block'; 
+           document.getElementById('deleteResultsBtn').style.display='none'; 
+           loadResults(); // end of codes for displaying results for getting results
+        } else {
+          document.getElementById('adminSection').style.display='none';
+          loadQuestions();
+          checkIfUserTookQuiz();
+          document.getElementById('startQuizBtn').disabled=true; // will enable if allowed
+        }
+      }
+    });
+  }
+
+  function checkIfUserTookQuiz() {
+    if (!currentUser) return;
+    const nameToCheck = document.getElementById('userName').value.trim();
+    if (!nameToCheck) return;
+    if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+      const start = quizSettings.availableStartTime.toDate();
+      const end = quizSettings.availableEndTime.toDate();
+      db.collection('results')
+        .where('name', '==', nameToCheck)
+        .where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(start))
+        .where('timestamp', '<=', firebase.firestore.Timestamp.fromDate(end))
+        .limit(1)
+        .get()
+        .then(snap => {
+          if (!snap.empty) {
+            document.getElementById('startQuizBtn').disabled=true;
+            alert('You already took the quiz within the available time window.');
+          } else {
+            document.getElementById('startQuizBtn').disabled=false;
+          }
+        });
+    } else {
+      db.collection('results')
+        .where('name', '==', nameToCheck)
+        .limit(1)
+        .get()
+        .then(snap => {
+          if (!snap.empty) {
+            document.getElementById('startQuizBtn').disabled=true;
+            alert('You already took the quiz.');
+          } else {
+            document.getElementById('startQuizBtn').disabled=false;
+          }
+        });
+    }
+  }
+
+  function resetUI() {
+    document.getElementById('authSection').style.display='block';
+    document.getElementById('userInfo').innerText='';
+    document.getElementById('adminSection').style.display='none';
+    document.getElementById('quizSection').style.display='none';
+    document.getElementById('questionsContainer').innerHTML='';
+    document.getElementById('timerDisplay').style.display='none';
+    document.getElementById('answeredCount').innerHTML='';
+    document.getElementById('resultSection').style.display='none';
+    document.getElementById('resultSection').innerHTML='';
+    document.getElementById('resultsTableContainer').innerHTML='';
+    questions=[]; userAnswers={}; currentPage=0; totalPages=0;
+    clearInterval(countdownInterval);
+    document.getElementById('timerDisplay').innerText='';
+    document.getElementById('timerDisplay').style.display='none';
+    document.getElementById('finishBtn').style.display='none';
+    document.getElementById('startQuizBtn').disabled=false;
+    document.getElementById('prevBtn').disabled=true;
+    document.getElementById('nextBtn').disabled=false;
+    document.getElementById('messageDiv').innerText='';
+    document.getElementById('messageDiv').className='';
+    document.getElementById('quizAvailabilityMessage').innerText='';
+    document.getElementById('quizAvailabilityMessage').className='';
+  }
+
+  function loadQuestions() {
+    db.collection('onlinequiz').where('createdByAdmin','==',true).get().then(snapshot => {
+      questions=[]; document.getElementById('questionsList').innerHTML='';
+      snapshot.forEach(doc => {
+        questions.push({id:doc.id, ...doc.data()});
+      });
+      renderAdminQuestions();
+      document.getElementById('startQuizBtn').disabled=false;
+    });
+  }
+
+  function renderAdminQuestions() {
+    const container= document.getElementById('questionsList');
+    container.innerHTML='';
+    questions.forEach((q,i) => {
+      const div=document.createElement('div');
+      div.className='item';
+      div.innerHTML= `
+        <strong>Question ${i+1}:</strong> ${q.question}<br/>
+        <strong>A:</strong> ${q.optionA}<br/>
+        <strong>B:</strong> ${q.optionB}<br/>
+        <strong>C:</strong> ${q.optionC}<br/>
+        <strong>D:</strong> ${q.optionD}<br/>
+        <strong>Correct:</strong> ${q.correctOption}<br/>
+        <button class="edit-btn" onclick="editQuestion('${q.id}')">Edit</button>
+        <button class="delete-btn" onclick="deleteQuestion('${q.id}')">Delete</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function addQuestion() {
+    if (!isAdmin) return;
+    const question=document.getElementById('questionText').value;
+    const optionA=document.getElementById('optionA').value;
+    const optionB=document.getElementById('optionB').value;
+    const optionC=document.getElementById('optionC').value;
+    const optionD=document.getElementById('optionD').value;
+    const correctOption=document.getElementById('correctOption').value.toUpperCase();
+    if (question && optionA && optionB && optionC && optionD && ['A','B','C','D'].includes(correctOption)) {
+      db.collection('onlinequiz').add({question,optionA,optionB,optionC,optionD,correctOption,createdByAdmin:true})
+      .then(()=> {
+        alert('Question added');
+        loadQuestions();
+        document.getElementById('questionText').value='';
+        document.getElementById('optionA').value='';
+        document.getElementById('optionB').value='';
+        document.getElementById('optionC').value='';
+        document.getElementById('optionD').value='';
+        document.getElementById('correctOption').value='';
+      });
+    } else {
+      alert('Fill all fields correctly');
+    }
+  }
+
+  function deleteQuestion(id) {
+    if (!isAdmin) return;
+    db.collection('onlinequiz').doc(id).delete().then(()=> {
+      alert('Question deleted');
+      loadQuestions();
+    });
+  }
+
+  function editQuestion(id) {
+    db.collection('onlinequiz').doc(id).get().then(doc => {
+      if (doc.exists) {
+        const data=doc.data();
+        const newQuestion=prompt('Edit Question:', data.question);
+        const newOptionA=prompt('Edit Option A:', data.optionA);
+        const newOptionB=prompt('Edit Option B:', data.optionB);
+        const newOptionC=prompt('Edit Option C:', data.optionC);
+        const newOptionD=prompt('Edit Option D:', data.optionD);
+        const newCorrectOption=prompt('Edit Correct Option (A, B, C, D):', data.correctOption).toUpperCase();
+        if (newQuestion && newOptionA && newOptionB && newOptionC && newOptionD && ['A','B','C','D'].includes(newCorrectOption)) {
+          db.collection('onlinequiz').doc(id).update({
+            question:newQuestion,
+            optionA:newOptionA,
+            optionB:newOptionB,
+            optionC:newOptionC,
+            optionD:newOptionD,
+            correctOption:newCorrectOption
+          }).then(()=> {
+            alert('Question updated');
+            loadQuestions();
+          });
+        } else {
+          alert('Invalid input, update canceled.');
+        }
+      }
+    });
+  }
+
+  // Load quiz settings
+  function loadQuizSettings() {
+    db.collection('quizSettings').doc('current').get()
+    .then(doc => {
+      if (doc.exists) {
+        quizSettings=doc.data();
+        document.getElementById('quizDuration').value=quizSettings.durationMinutes;
+        if (quizSettings.availableStartTime) {
+          document.getElementById('startTime').value=quizSettings.availableStartTime.toDate().toISOString().slice(0,16);
+        }
+        if (quizSettings.availableEndTime) {
+          document.getElementById('endTime').value=quizSettings.availableEndTime.toDate().toISOString().slice(0,16);
+        }
+        checkQuizAvailabilityMessage();
+      }
+    });
+  }
+
+  function saveQuizSettings() {
+    if (!isAdmin) {
+      alert('Only admin can save settings.');
+      return;
+    }
+    const durationMinutes=parseInt(document.getElementById('quizDuration').value);
+    const startTimeStr=document.getElementById('startTime').value;
+    const endTimeStr=document.getElementById('endTime').value;
+    if (isNaN(durationMinutes) || !startTimeStr || !endTimeStr) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+    const startTimestamp=new Date(startTimeStr);
+    const endTimestamp=new Date(endTimeStr);
+    if (startTimestamp >= endTimestamp) {
+      alert('Start time must be before end time.');
+      return;
+    }
+    db.collection('quizSettings').doc('current').set({
+      durationMinutes: durationMinutes,
+      availableStartTime: firebase.firestore.Timestamp.fromDate(startTimestamp),
+      availableEndTime: firebase.firestore.Timestamp.fromDate(endTimestamp)
+    }).then(() => {
+      alert('Settings saved.');
+      loadQuizSettings();
+    }).catch(()=>{ alert('Error saving settings.'); });
+  }
+
+  // --- Load results ---
+  function loadResults() {
+    //conditions for displaying results for all users
+    if (currentUser && (currentUser.email===adminEmail || currentUser.email===otherusers)) {
+      loadAllResults();
+    } else {
+      loadUserResults();
+    }
+  }
+
+  function loadAllResults() {
+    if (!currentUser) return;
+    db.collection('results').orderBy('timestamp','desc').limit(100).get()
+    .then(snapshot => {
+      const container= document.getElementById('resultsTableContainer');
+      container.innerHTML='';
+      const table= document.createElement('table');
+      table.innerHTML= `
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>NAME</th>
+            <th class="email">USER EMAIL</th>
+            <th>SCORE (%)</th>
+            <th>ATTEMPT</th>
+            <th>DATE AND TIME</th>
+            <th class="duration">DURATION</th>
+            <th class="actions">ACTIONS</th>
+          </tr>
+        </thead>
+      `;
+      const tbody= document.createElement('tbody');
+      let sn=1;
+      snapshot.forEach(doc => {
+        const data=doc.data();
+        const durSeconds= data.duration||0;
+        const m= Math.floor(durSeconds/60);
+        const s= durSeconds%60;
+        const durStr= `${m} minutes ${s} seconds`;
+        const row= document.createElement('tr');
+        row.innerHTML= `
+          <td>${sn}</td>
+          <td>${data.name}</td>
+          <td class="email">${data.userEmail || ''}</td>
+          <td>${data.score} / ${data.total} (${(data.score/data.total*100).toFixed(2)}%)</td>
+          <td>${data.attempts||1}</td>
+          <td>${data.timestamp.toDate().toLocaleString()}</td>
+          <td class="duration">${durStr}</td>
+          <td class="actions">
+            <button class="action-btn edit-btn" onclick="editResult('${doc.id}')">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteResult('${doc.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+        sn++;
+      });
+      table.appendChild(tbody);
+      document.getElementById('resultsTableContainer').innerHTML='';
+      document.getElementById('resultsTableContainer').appendChild(table);
+      document.getElementById('adminResults').style.display='block';
+      document.getElementById('allusers').style.display='block';
+      // Show/hide columns based on role
+    if (!isAdmin) {
+      // Hide "USER EMAIL" header and all cells with class 'email'
+      document.querySelectorAll('.email').forEach(el => el.style.display='none');
+      // Hide "DURATION" header and all cells with class 'duration'
+      document.querySelectorAll('.duration').forEach(el => el.style.display='none');
+      // Hide "ACTIONS" header and all cells with class 'actions'
+      document.querySelectorAll('.actions').forEach(el => el.style.display='none');
+    } else {
+      // Show columns if admin
+      document.querySelectorAll('.email').forEach(el => el.style.display='table-cell');
+      document.querySelectorAll('.duration').forEach(el => el.style.display='table-cell');
+      document.querySelectorAll('.actions').forEach(el => el.style.display='table-cell');
+    }
+    });
+  }
+
+  function loadUserResults() {
+    if (!currentUser) return;
+    db.collection('results')
+      .where('userId','==', currentUser.uid)
+      .orderBy('timestamp','desc')
+      .limit(100)
+      .get()
+      .then(snapshot => {
+        const container= document.getElementById('resultsTableContainer');
+        container.innerHTML='';
+        const table= document.createElement('table');
+        table.innerHTML= `
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>NAME</th>
+              <th>SCORE (%)</th>
+              <th>ATTEMPT</th>
+              <th>DATE AND TIME</th>
+              <th>DURATION</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+        `;
+        const tbody= document.createElement('tbody');
+        let sn=1;
+        snapshot.forEach(doc => {
+          const data=doc.data();
+          const durSeconds= data.duration||0;
+          const m= Math.floor(durSeconds/60);
+          const s= durSeconds%60;
+          const durStr= `${m} minutes ${s} seconds`;
+          const row= document.createElement('tr');
+          row.innerHTML= `
+            <td>${sn}</td>
+            <td>${data.name}</td>
+            <td>${data.score} / ${data.total} (${(data.score/data.total*100).toFixed(2)}%)</td>
+            <td>${data.attempts||1}</td>
+            <td>${data.timestamp.toDate().toLocaleString()}</td>
+            <td>${durStr}</td>
+            <td>
+              <button class="action-btn edit-btn" onclick="editResult('${doc.id}')">Edit</button>
+              <button class="action-btn delete-btn" onclick="deleteResult('${doc.id}')">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+          sn++;
+        });
+        table.appendChild(tbody);
+        document.getElementById('resultsTableContainer').innerHTML='';
+        document.getElementById('resultsTableContainer').appendChild(table);
+        document.getElementById('adminResults').style.display='block';
+        document.getElementById('allusers').style.display='block';
+      });
+  }
+
+function editResult(id) {
+  // Fetch the existing result data
+  db.collection('results').doc(id).get().then(doc => {
+    if (!doc.exists) {
+      alert('Result not found!');
+      return;
+    }
+    const data = doc.data();
+
+    // Prompt user for new values (or create a form for better UX)
+    const newScore = prompt('Enter new score:', data.score);
+    const newAttempts = prompt('Enter new attempts:', data.attempts);
+    if (newScore !== null && newAttempts !== null) {
+      // Validate inputs
+      const scoreNum = parseInt(newScore);
+      const attemptsNum = parseInt(newAttempts);
+      if (isNaN(scoreNum) || isNaN(attemptsNum)) {
+        alert('Invalid input!');
+        return;
+      }
+      // Update in Firestore
+      db.collection('results').doc(id).update({
+        score: scoreNum,
+        attempts: attemptsNum,
+        timestamp: new Date() // optional: update timestamp
+      }).then(() => {
+        alert('Result updated');
+        loadResults(); // Refresh results display
+      }).catch(error => {
+        alert('Error updating result: ' + error.message);
+      });
+    }
+  }).catch(error => {
+    alert('Error fetching result: ' + error.message);
+  });
+}
+  function deleteResult(id) {
+    if(confirm('Are you sure you want to delete this result?')){
+      db.collection('results').doc(id).delete().then(() => {
+        alert('Result deleted');
+        loadResults();
+      });
+    }
+  }
+
+  // --- Quiz control functions ---
+  function startQuiz() {
+    if (questions.length === 0) {
+      alert('Questions are not loaded yet. Please wait.');
+      return;
+    }
+    // check if current time is within range
+    if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+      const now = new Date();
+      const start = quizSettings.availableStartTime.toDate();
+      const end = quizSettings.availableEndTime.toDate();
+      if (now < start || now > end) {
+        alert('Quiz is not available at this time.');
+        return;
+      }
+    }
+    const nameVal = document.getElementById('userName').value.trim();
+    if (!nameVal) {
+      alert('Please enter your name.');
+      return;
+    }
+    // Reset answers
+    userAnswers={};
+    currentPage=0;
+    totalPages=Math.ceil(questions.length/questionsPerPage);
+    displayQuestionsPage();
+
+    // Reset buttons
+    document.getElementById('prevBtn').disabled=true;
+    document.getElementById('nextBtn').disabled=false;
+    document.getElementById('finishBtn').style.display='none';
+
+    // Timer
+    const durationMin= quizSettings.durationMinutes || 20;
+    startTime=Date.now();
+    totalSecondsRemaining= durationMin*60;
+    startCountdown(totalSecondsRemaining);
+  }
+
+  function finishQuiz() {
+    saveAnswersCurrentPage();
+
+    // check if all answered
+    let answeredAll=true;
+    for (let q of questions) {
+      if (!userAnswers[q.id]) { answeredAll=false; break; }
+    }
+    if (!answeredAll) {
+      alert('Please answer all questions before finishing.');
+      return;
+    }
+    if (!confirm('Are you sure you want to finish?')) return;
+    if (countdownInterval) clearInterval(countdownInterval);
+    const endTime= Date.now();
+    const durationSeconds= Math.floor((endTime - startTime)/1000);
+
+    // Count correct
+    let correctCount=0;
+    questions.forEach(q => {
+      const ans=userAnswers[q.id]?.toUpperCase()||'';
+      const correct= q.correctOption?.toUpperCase()||'';
+      if (ans===correct && ans!=='') correctCount++;
+    });
+    const total= questions.length;
+    const perc= (correctCount/total)*100;
+
+    let userName= document.getElementById('userName').value.trim() || (currentUser.email || 'Anonymous');
+
+    // Check if user with same name exists, update attempts
+    db.collection('results')
+      .where('name', '==', userName)
+      .get()
+      .then(snap => {
+        if (!snap.empty) {
+          // update attempts
+          const docId = snap.docs[0].id;
+          const existingData= snap.docs[0].data();
+          const newAttempts= (existingData.attempts || 1) + 1;
+          db.collection('results').doc(docId).update({
+            attempts: newAttempts,
+            score: correctCount,
+            timestamp: new Date(),
+            duration: durationSeconds
+          }).then(()=> {
+            alert('Your attempt has been updated.');
+            loadResults();
+          });
+        } else {
+          // create new
+          db.collection('results').add({
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            name: userName,
+            score: correctCount,
+            total: total,
+            attempts: 1,
+            percentage: perc,
+            timestamp: new Date(),
+            duration: durationSeconds
+          }).then(()=> {
+            loadResults();
+          });
+        }
+      });
+    // Show result
+   // Existing code to set innerHTML
+document.getElementById('resultSection').innerHTML= `🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS&nbsp;&nbsp; <strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`;
+document.getElementById('resultSection').style.display='block';
+
+    // Hide questions
+    document.getElementById('questionsContainer').innerHTML='';
+    document.getElementById('questionsContainer').style.display='none';
+
+    // disable finish button
+    document.getElementById('finishBtn').style.display='none';
+    document.getElementById('prevBtn').disabled=true;
+    document.getElementById('nextBtn').disabled=true;
+    document.getElementById('startQuizBtn').disabled=true;
+  }
+
+  function startCountdown(seconds) {
+    document.getElementById('timerDisplay').style.display='block';
+    let remaining=seconds;
+    document.getElementById('timerDisplay').innerText= formatTime(remaining);
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval= setInterval(()=> {
+      remaining--;
+      if (remaining<=0) {
+        clearInterval(countdownInterval);
+        document.getElementById('timerDisplay').innerText= "Time's up!";
+        alert('Time is up!');
+        finishQuiz();
+      } else {
+        document.getElementById('timerDisplay').innerText= formatTime(remaining);
+      }
+    },1000);
+  }
+
+  function formatTime(seconds) {
+    const min= Math.floor(seconds/60);
+    const sec= seconds%60;
+    return `${min}:${sec<10?'0':''}${sec}`;
+  }
+
+  // --- Load quiz settings ---
+  function loadQuizSettings() {
+    db.collection('quizSettings').doc('current').get()
+    .then(doc => {
+      if (doc.exists) {
+        quizSettings=doc.data();
+        document.getElementById('quizDuration').value=quizSettings.durationMinutes;
+        if (quizSettings.availableStartTime) {
+          document.getElementById('startTime').value=quizSettings.availableStartTime.toDate().toISOString().slice(0,16);
+        }
+        if (quizSettings.availableEndTime) {
+          document.getElementById('endTime').value=quizSettings.availableEndTime.toDate().toISOString().slice(0,16);
+        }
+        checkQuizAvailabilityMessage();
+      }
+    });
+  }
+
+  function saveQuizSettings() {
+    if (!isAdmin) {
+      alert('Only admin can save settings.');
+      return;
+    }
+    const durationMinutes=parseInt(document.getElementById('quizDuration').value);
+    const startTimeStr=document.getElementById('startTime').value;
+    const endTimeStr=document.getElementById('endTime').value;
+    if (isNaN(durationMinutes) || !startTimeStr || !endTimeStr) {
+      alert('Please fill all fields correctly.');
+      return;
+    }
+    const startTimestamp=new Date(startTimeStr);
+    const endTimestamp=new Date(endTimeStr);
+    if (startTimestamp >= endTimestamp) {
+      alert('Start time must be before end time.');
+      return;
+    }
+    db.collection('quizSettings').doc('current').set({
+      durationMinutes: durationMinutes,
+      availableStartTime: firebase.firestore.Timestamp.fromDate(startTimestamp),
+      availableEndTime: firebase.firestore.Timestamp.fromDate(endTimestamp)
+    }).then(() => {
+      alert('Settings saved.');
+      loadQuizSettings();
+    }).catch(()=>{ alert('Error saving settings.'); });
+  }
+
+  function checkQuizAvailabilityMessage() {
+    const messageDiv = document.getElementById('messageDiv');
+    if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+      const start = quizSettings.availableStartTime.toDate();
+      const end = quizSettings.availableEndTime.toDate();
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit' };
+      const startStr = start.toLocaleString(undefined, options);
+      const endStr = end.toLocaleString(undefined, options);
+      document.getElementById('quizAvailabilityMessage').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+      
+      const now = new Date();
+      if (now >= start && now <= end) {
+        document.getElementById('messageDiv').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+        document.getElementById('messageDiv').className='available';
+        document.getElementById('startQuizBtn').disabled=false;
+        document.getElementById('nextBtn').disabled=false;
+        document.getElementById('prevBtn').disabled=true;
+      } else {
+        document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+        document.getElementById('messageDiv').className='not-available';
+        document.getElementById('startQuizBtn').disabled=true;
+        document.getElementById('nextBtn').disabled=true;
+        document.getElementById('prevBtn').disabled=true;
+      }
+    } else {
+      document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+      document.getElementById('messageDiv').className='not-available';
+      document.getElementById('startQuizBtn').disabled=true;
+      document.getElementById('nextBtn').disabled=true;
+      document.getElementById('prevBtn').disabled=true;
+    }
+  }
+
+  function displayQuestionsPage() {
+    const container= document.getElementById('questionsContainer');
+    container.innerHTML='';
+    const startIdx= currentPage*questionsPerPage;
+    const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+    for (let i=startIdx; i<endIdx; i++) {
+      const q= questions[i];
+      const div=document.createElement('div');
+      div.className='item';
+
+      const optionsHTML= `
+        <label><input type="radio" name="${q.id}" value="A" ${userAnswers[q.id]==='A'?'checked':''}/> A</label>
+        <label><input type="radio" name="${q.id}" value="B" ${userAnswers[q.id]==='B'?'checked':''}/> B</label>
+        <label><input type="radio" name="${q.id}" value="C" ${userAnswers[q.id]==='C'?'checked':''}/> C</label>
+        <label><input type="radio" name="${q.id}" value="D" ${userAnswers[q.id]==='D'?'checked':''}/> D</label>
+      `;
+
+      div.innerHTML= `
+        <strong>Question ${i+1}:</strong> ${q.question}<br/>
+        ${optionsHTML}
+        <div style="margin-top:8px;">
+          <span>Answered: ${userAnswers[q.id]?userAnswers[q.id]:'No'}</span>
+        </div>
+      `;
+
+      const radios= div.querySelectorAll(`input[name="${q.id}"]`);
+      radios.forEach(radio => {
+        radio.addEventListener('change', ()=> {
+          userAnswers[q.id]=radio.value;
+          updateAnsweredCount();
+          checkPageAnswers();
+        });
+      });
+      container.appendChild(div);
+    }
+    document.getElementById('prevBtn').disabled= true; // always disable
+    document.getElementById('nextBtn').disabled= true; // wait for answers
+    document.getElementById('finishBtn').style.display= 'none';
+    checkPageAnswers();
+  }
+
+  function updateAnsweredCount() {
+    const count= Object.values(userAnswers).length;
+    document.getElementById('answeredCount').innerText= `Answered: ${count} / ${questions.length}`;
+  }
+
+  function checkPageAnswers() {
+    const startIdx= currentPage*questionsPerPage;
+    const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+    let allAnswered=true;
+    for (let i=startIdx; i<endIdx; i++) {
+      const q= questions[i];
+      if (!userAnswers[q.id]) { allAnswered=false; break; }
+    }
+    document.getElementById('nextBtn').disabled= !allAnswered;
+    document.getElementById('finishBtn').style.display= (currentPage===totalPages-1)?'inline':'none';
+    document.getElementById('finishBtn').disabled= (currentPage!==totalPages-1);
+  }
+
+  function nextPage() {
+    if (currentPage<totalPages-1 && !document.getElementById('nextBtn').disabled) {
+      saveAnswersCurrentPage();
+      currentPage++;
+      displayQuestionsPage();
+    }
+  }
+
+  function prevPage() {
+    // disabled intentionally, so this won't do anything
+  }
+
+  function saveAnswersCurrentPage() {
+    // answers are stored immediately on change
+  }
+
+  // Start quiz
+function startQuiz() {
+  document.getElementById('startQuizBtn').disabled=true;
+  if (questions.length === 0) { alert('Loading questions, please wait...'); return; }
+  if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+    const now=new Date();
+    const start= quizSettings.availableStartTime.toDate();
+    const end= quizSettings.availableEndTime.toDate();
+    if (now<start || now>end) { alert('Quiz not available now'); return; }
+  }
+  const nameVal=document.getElementById('userName').value.trim();
+  if (!nameVal) { alert('Enter your name'); return; }
+  userAnswers={};
+  currentPage=0;
+  totalPages=Math.ceil(questions.length/questionsPerPage);
+  displayQuestionsPage();
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=false;
+  document.getElementById('finishBtn').style.display='none';
+  // start countdown
+  const durationMin= quizSettings.durationMinutes || 20;
+  startTime=Date.now();
+  totalSecondsRemaining= durationMin*60;
+  startCountdown(totalSecondsRemaining);
+}
+
+// Finish quiz
+// --- Finish quiz ---
+function finishQuiz() {
+  saveAnswersCurrentPage();
+
+  // check if all answered
+  let allAnswered=true;
+  for (let q of questions) {
+    if (!userAnswers[q.id]) { allAnswered=false; break; }
+  }
+  if (!allAnswered) { alert('Please answer all questions'); return; }
+  if (!confirm('Finish?')) return;
+  if (countdownInterval) clearInterval(countdownInterval);
+  const endTime= Date.now();
+  const durationSeconds= Math.floor((endTime-startTime)/1000);
+
+  // count correct answers
+  let correctCount=0;
+  questions.forEach(q => {
+    if ((userAnswers[q.id]?.toUpperCase()||'')=== (q.correctOption?.toUpperCase()||'')) correctCount++;
+  });
+  const total= questions.length;
+  const perc= (correctCount/total)*100;
+
+  // Get user name or email
+  let nameVal= document.getElementById('userName').value.trim() || (currentUser.email||'');
+
+  // Save result for **any logged-in user**, as a new record
+  db.collection('results').add({
+    userId: currentUser.uid,
+    userEmail: currentUser.email,
+    name: nameVal,
+    score: correctCount,
+    total: total,
+    attempts: 1, // Each record is a new attempt
+    percentage: perc,
+    timestamp: new Date(),
+    duration: durationSeconds
+  }).then(() => {
+    loadResults();
+    alert('Your results have been saved.');
+  });
+
+  // Show the result message
+  document.getElementById('resultSection').innerHTML= 
+    `🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS <strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`;
+  
+  // Show the message in the center for 10 seconds
+  showCenteredMessage(`🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS &nbsp;&nbsp;<strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`);
+
+  // Hide questions and disable buttons
+  document.getElementById('questionsContainer').innerHTML='';
+  document.getElementById('questionsContainer').style.display='none';
+
+  document.getElementById('finishBtn').style.display='none';
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=true;
+  document.getElementById('startQuizBtn').disabled=true;
+}
+
+// countdown
+function startCountdown(seconds) {
+  document.getElementById('timerDisplay').style.display='block';
+  let remaining=seconds;
+  document.getElementById('timerDisplay').innerText= formatTime(remaining);
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval= setInterval(()=> {
+    remaining--;
+    if (remaining<=0) {
+      clearInterval(countdownInterval);
+      document.getElementById('timerDisplay').innerText= "Time's up!";
+      alert('Time is up!');
+      finishQuiz();
+    } else {
+      document.getElementById('timerDisplay').innerText= formatTime(remaining);
+    }
+  },1000);
+}
+function formatTime(seconds) {
+  const m= Math.floor(seconds/60);
+  const s= seconds%60;
+  return `${m}:${s<10?'0':''}${s}`;
+}
+
+// Load settings
+function loadQuizSettings() {
+  db.collection('quizSettings').doc('current').get().then(doc => {
+    if (doc.exists) {
+      quizSettings=doc.data();
+      document.getElementById('quizDuration').value=quizSettings.durationMinutes;
+      if (quizSettings.availableStartTime) {
+        document.getElementById('startTime').value=quizSettings.availableStartTime.toDate().toISOString().slice(0,16);
+      }
+      if (quizSettings.availableEndTime) {
+        document.getElementById('endTime').value=quizSettings.availableEndTime.toDate().toISOString().slice(0,16);
+      }
+      checkQuizAvailabilityMessage();
+    }
+  });
+}
+
+// Save settings
+function saveQuizSettings() {
+  if (!isAdmin) { alert('Admin only'); return; }
+  const duration=parseInt(document.getElementById('quizDuration').value);
+  const st=document.getElementById('startTime').value;
+  const et=document.getElementById('endTime').value;
+  if (isNaN(duration) || !st || !et) { alert('Fill all'); return; }
+  const start=new Date(st);
+  const end=new Date(et);
+  if (start>=end) { alert('Start before end'); return; }
+  db.collection('quizSettings').doc('current').set({
+    durationMinutes: duration,
+    availableStartTime: firebase.firestore.Timestamp.fromDate(start),
+    availableEndTime: firebase.firestore.Timestamp.fromDate(end)
+  }).then(()=>{ alert('Saved'); loadQuizSettings(); });
+}
+
+// --- UI helpers ---
+function checkQuizAvailabilityMessage() {
+  const msgDiv= document.getElementById('messageDiv');
+  if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+    const start= quizSettings.availableStartTime.toDate();
+    const end= quizSettings.availableEndTime.toDate();
+    const options= { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' };
+    const startStr= start.toLocaleString(undefined, options);
+    const endStr= end.toLocaleString(undefined, options);
+    document.getElementById('quizAvailabilityMessage').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+    const now= new Date();
+    if (now>=start && now<=end) {
+      document.getElementById('messageDiv').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+      document.getElementById('messageDiv').className= 'available';
+      document.getElementById('startQuizBtn').disabled= false;
+      document.getElementById('nextBtn').disabled= false;
+      document.getElementById('prevBtn').disabled= true;
+    } else {
+      document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+      document.getElementById('messageDiv').className= 'not-available';
+      document.getElementById('startQuizBtn').disabled= true;
+      document.getElementById('nextBtn').disabled= true;
+      document.getElementById('prevBtn').disabled= true;
+    }
+  } else {
+    document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+    document.getElementById('messageDiv').className= 'not-available';
+    document.getElementById('startQuizBtn').disabled= true;
+    document.getElementById('nextBtn').disabled= true;
+    document.getElementById('prevBtn').disabled= true;
+  }
+}
+
+function displayQuestionsPage() {
+  const container= document.getElementById('questionsContainer');
+  container.innerHTML='';
+  const startIdx= currentPage*questionsPerPage;
+  const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+  for (let i=startIdx; i<endIdx; i++) {
+    const q= questions[i];
+    const div=document.createElement('div');
+    div.className='item';
+    const optionsHTML= `
+      <label><input type="radio" name="${q.id}" value="A" ${userAnswers[q.id]==='A'?'checked':''}/> A</label>
+      <label><input type="radio" name="${q.id}" value="B" ${userAnswers[q.id]==='B'?'checked':''}/> B</label>
+      <label><input type="radio" name="${q.id}" value="C" ${userAnswers[q.id]==='C'?'checked':''}/> C</label>
+      <label><input type="radio" name="${q.id}" value="D" ${userAnswers[q.id]==='D'?'checked':''}/> D</label>
+    `;
+    div.innerHTML= `
+      <strong>Question ${i+1}:</strong> ${q.question}<br/>
+      ${optionsHTML}
+      <div style="margin-top:8px;">
+        <span>Answered: ${userAnswers[q.id]?userAnswers[q.id]:'No'}</span>
+      </div>
+    `;
+    // handle answer change
+    const radios= div.querySelectorAll(`input[name="${q.id}"]`);
+    radios.forEach(radio => {
+      radio.addEventListener('change', ()=> {
+        userAnswers[q.id]=radio.value;
+        updateAnsweredCount();
+        checkPageAnswers();
+      });
+    });
+    container.appendChild(div);
+  }
+  // always disable previous
+  document.getElementById('prevBtn').disabled=true;
+  // enable next if answers are complete
+  document.getElementById('nextBtn').disabled= true;
+  document.getElementById('finishBtn').style.display='none';
+  checkPageAnswers();
+}
+
+function updateAnsweredCount() {
+  const count= Object.values(userAnswers).length;
+  document.getElementById('answeredCount').innerText= `Answered: ${count} / ${questions.length}`;
+}
+
+function checkPageAnswers() {
+  const startIdx= currentPage*questionsPerPage;
+  const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+  let allAnswered=true;
+  for (let i=startIdx; i<endIdx; i++) {
+    const q= questions[i];
+    if (!userAnswers[q.id]) { allAnswered=false; break; }
+  }
+  document.getElementById('nextBtn').disabled= !allAnswered;
+  document.getElementById('finishBtn').style.display= (currentPage===totalPages-1)?'inline':'none';
+  document.getElementById('finishBtn').disabled= (currentPage!==totalPages-1);
+}
+
+function nextPage() {
+  if (currentPage<totalPages-1 && !document.getElementById('nextBtn').disabled) {
+    saveAnswersCurrentPage();
+    currentPage++;
+    displayQuestionsPage();
+  }
+}
+
+function prevPage() {
+  // intentionally disabled, no going back
+}
+
+// Save answers (immediate on change)
+function saveAnswersCurrentPage() {
+  // answers saved on change
+}
+
+// start quiz button
+function startQuiz() {
+  if (questions.length===0) { alert('Loading questions...'); return; }
+  if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+    const now= new Date();
+    const start= quizSettings.availableStartTime.toDate();
+    const end= quizSettings.availableEndTime.toDate();
+    if (now<start || now>end) { alert('Quiz not available now'); return; }
+  }
+  const nameVal= document.getElementById('userName').value.trim();
+  if (!nameVal) { alert('Enter your name'); return; }
+  userAnswers={};
+  currentPage=0;
+  totalPages= Math.ceil(questions.length/questionsPerPage);
+  displayQuestionsPage();
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=false;
+  document.getElementById('finishBtn').style.display='none';
+  // start countdown
+  const durationMin= quizSettings.durationMinutes || 20;
+  startTime=Date.now();
+  totalSecondsRemaining= durationMin*60;
+  startCountdown(totalSecondsRemaining);
+}
+
+// finish quiz
+function finishQuiz() {
+  saveAnswersCurrentPage();
+  // check all answered
+  let answeredAll=true;
+  for (let q of questions) {
+    if (!userAnswers[q.id]) { answeredAll=false; break; }
+  }
+  if (!answeredAll) { alert('Answer all questions'); return; }
+  if (!confirm('Finish?')) return;
+  if (countdownInterval) clearInterval(countdownInterval);
+  const endTime= Date.now();
+  const durationSeconds= Math.floor((endTime-startTime)/1000);
+  // count correct
+  let correctCount=0;
+  questions.forEach(q => {
+    if ((userAnswers[q.id]?.toUpperCase()||'')=== (q.correctOption?.toUpperCase()||'')) correctCount++;
+  });
+  const total= questions.length;
+  const perc= (correctCount/total)*100;
+  let nameVal= document.getElementById('userName').value.trim() || (currentUser.email||'');
+  // check if same name exists, update attempts
+  db.collection('results').where('name','==',nameVal).get().then(snap => {
+    if (!snap.empty) {
+      const docId= snap.docs[0].id;
+      const existing=snap.docs[0].data();
+      const newAttempts= (existing.attempts||1)+1;
+      db.collection('results').doc(docId).update({
+        attempts: newAttempts,
+        score: correctCount,
+        timestamp: new Date(),
+        duration: durationSeconds
+      }).then(()=>{ alert('Attempt updated'); loadResults(); });
+    } else {
+      db.collection('results').add({
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        name: nameVal,
+        score: correctCount,
+        total: total,
+        attempts:1,
+        percentage: perc,
+        timestamp: new Date(),
+        duration: durationSeconds
+      }).then(()=>{ loadResults(); });
+    }
+  });
+document.getElementById('resultSection').innerHTML= `🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS &nbsp;<strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`;
+// Show the message in the center for 5 seconds
+showCenteredMessage(`🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS &nbsp;&nbsp;<strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`);
+  document.getElementById('resultSection').style.display='block';
+
+  document.getElementById('questionsContainer').innerHTML='';
+  document.getElementById('questionsContainer').style.display='none';
+
+  document.getElementById('finishBtn').style.display='none';
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=true;
+  document.getElementById('startQuizBtn').disabled=true;
+}
+
+// countdown
+function startCountdown(seconds) {
+  document.getElementById('timerDisplay').style.display='block';
+  let remaining=seconds;
+  document.getElementById('timerDisplay').innerText= formatTime(remaining);
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval= setInterval(()=> {
+    remaining--;
+    if (remaining<=0) {
+      clearInterval(countdownInterval);
+      document.getElementById('timerDisplay').innerText= "Time's up!";
+      alert('Time is up!');
+      finishQuiz();
+    } else {
+      document.getElementById('timerDisplay').innerText= formatTime(remaining);
+    }
+  },1000);
+}
+function formatTime(seconds) {
+  const m= Math.floor(seconds/60);
+  const s= seconds%60;
+  return `${m}:${s<10?'0':''}${s}`;
+}
+
+// Load settings
+function loadQuizSettings() {
+  db.collection('quizSettings').doc('current').get().then(doc => {
+    if (doc.exists) {
+      quizSettings=doc.data();
+      document.getElementById('quizDuration').value=quizSettings.durationMinutes;
+      if (quizSettings.availableStartTime) {
+        document.getElementById('startTime').value=quizSettings.availableStartTime.toDate().toISOString().slice(0,16);
+      }
+      if (quizSettings.availableEndTime) {
+        document.getElementById('endTime').value=quizSettings.availableEndTime.toDate().toISOString().slice(0,16);
+      }
+      checkQuizAvailabilityMessage();
+    }
+  });
+}
+
+// Save settings
+function saveQuizSettings() {
+  if (!isAdmin) { alert('Admin only'); return; }
+  const duration=parseInt(document.getElementById('quizDuration').value);
+  const st=document.getElementById('startTime').value;
+  const et=document.getElementById('endTime').value;
+  if (isNaN(duration) || !st || !et) { alert('Fill all'); return; }
+  const start=new Date(st);
+  const end=new Date(et);
+  if (start>=end) { alert('Start before end'); return; }
+  db.collection('quizSettings').doc('current').set({
+    durationMinutes: duration,
+    availableStartTime: firebase.firestore.Timestamp.fromDate(start),
+    availableEndTime: firebase.firestore.Timestamp.fromDate(end)
+  }).then(()=>{ alert('Saved'); loadQuizSettings(); });
+}
+
+// --- UI helpers ---
+function checkQuizAvailabilityMessage() {
+  const msgDiv= document.getElementById('messageDiv');
+  if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+    const start= quizSettings.availableStartTime.toDate();
+    const end= quizSettings.availableEndTime.toDate();
+    const options= { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' };
+    const startStr= start.toLocaleString(undefined, options);
+    const endStr= end.toLocaleString(undefined, options);
+    document.getElementById('quizAvailabilityMessage').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+    const now= new Date();
+    if (now>=start && now<=end) {
+      document.getElementById('messageDiv').innerText= `QUIZ IS AVAILABLE FROM ${startStr} UP TO ${endStr}`;
+      document.getElementById('messageDiv').className= 'available';
+      document.getElementById('startQuizBtn').disabled= false;
+      document.getElementById('nextBtn').disabled= false;
+      document.getElementById('prevBtn').disabled= true;
+    } else {
+      document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+      document.getElementById('messageDiv').className= 'not-available';
+      document.getElementById('startQuizBtn').disabled= true;
+      document.getElementById('nextBtn').disabled= true;
+      document.getElementById('prevBtn').disabled= true;
+    }
+  } else {
+    document.getElementById('messageDiv').innerText= `QUIZ IS NOT AVAILABLE RIGHT NOW`;
+    document.getElementById('messageDiv').className= 'not-available';
+    document.getElementById('startQuizBtn').disabled= true;
+    document.getElementById('nextBtn').disabled= true;
+    document.getElementById('prevBtn').disabled= true;
+  }
+}
+function displayQuestionsPage() {
+  const container= document.getElementById('questionsContainer');
+  container.innerHTML='';
+
+  const startIdx= currentPage*questionsPerPage;
+  const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+
+  for (let i=startIdx; i<endIdx; i++) {
+    const q= questions[i];
+    const div=document.createElement('div');
+    div.className='item';
+
+    // Generate options HTML with labels a., b., c., d.
+    const optionsHTML= `
+      <label><input type="radio" name="${q.id}" value="A" ${userAnswers[q.id]==='A'?'checked':''}/>  <span class="letter">a.</span> ${q.optionA}</label>
+      <label><input type="radio" name="${q.id}" value="B" ${userAnswers[q.id]==='B'?'checked':''}/>  <span class="letter">b.</span> ${q.optionB}</label>
+      <label><input type="radio" name="${q.id}" value="C" ${userAnswers[q.id]==='C'?'checked':''}/>  <span class="letter">c.</span> ${q.optionC}</label>
+      <label><input type="radio" name="${q.id}" value="D" ${userAnswers[q.id]==='D'?'checked':''}/>  <span class="letter">d.</span>${q.optionD}</label>
+    `;
+
+    // Determine initial answer status
+    const answerStatus= userAnswers[q.id] ? 'Answer: Yes' : 'Answer: No';
+
+    div.innerHTML= `
+      <strong>Question ${i+1}:</strong> ${q.question}<br/>
+      ${optionsHTML}
+      <div style="margin-top:8px;">
+        <span>${answerStatus}</span>
+      </div>
+    `;
+
+    // Add event listener to each radio button
+    const radios= div.querySelectorAll(`input[name="${q.id}"]`);
+    radios.forEach(radio => {
+      radio.addEventListener('change', ()=> {
+        userAnswers[q.id]=radio.value;
+
+        // Find the span element and update it
+        const answerSpan= radio.closest('.item').querySelector('span');
+        if (userAnswers[q.id]) {
+          answerSpan.innerText='Answer: Yes';
+        } else {
+          answerSpan.innerText='Answer: No';
+        }
+
+        updateAnsweredCount();
+        checkPageAnswers();
+      });
+    });
+    container.appendChild(div);
+  }
+
+  // Disable previous button
+  document.getElementById('prevBtn').disabled=true;
+  // Disable next button initially
+  document.getElementById('nextBtn').disabled=true;
+  // Hide finish button
+  document.getElementById('finishBtn').style.display='none';
+
+  checkPageAnswers();
+}
+
+function updateAnsweredCount() {
+  const count= Object.values(userAnswers).length;
+  document.getElementById('answeredCount').innerText= `Answered: ${count} / ${questions.length}`;
+}
+
+function checkPageAnswers() {
+  const startIdx= currentPage*questionsPerPage;
+  const endIdx= Math.min(startIdx+questionsPerPage, questions.length);
+  let allAnswered=true;
+  for (let i=startIdx; i<endIdx; i++) {
+    const q= questions[i];
+    if (!userAnswers[q.id]) { allAnswered=false; break; }
+  }
+  document.getElementById('nextBtn').disabled= !allAnswered;
+  document.getElementById('finishBtn').style.display= (currentPage===totalPages-1)?'inline':'none';
+  document.getElementById('finishBtn').disabled= (currentPage!==totalPages-1);
+}
+
+function nextPage() {
+  if (currentPage<totalPages-1 && !document.getElementById('nextBtn').disabled) {
+    saveAnswersCurrentPage();
+    currentPage++;
+    displayQuestionsPage();
+  }
+}
+
+function prevPage() {
+  // intentionally disabled to prevent going back
+}
+
+// Save answers (answers saved on change)
+function saveAnswersCurrentPage() {
+  // no-op because answers stored immediately
+}
+
+// Start quiz
+function startQuiz() {
+  if (questions.length===0) { alert('Loading questions...'); return; }
+  if (quizSettings.availableStartTime && quizSettings.availableEndTime) {
+    const now=new Date();
+    const start= quizSettings.availableStartTime.toDate();
+    const end= quizSettings.availableEndTime.toDate();
+    if (now<start || now>end) { alert('Quiz not available now'); return; }
+  }
+  const nameVal= document.getElementById('userName').value.trim();
+  if (!nameVal) { alert('Enter your name'); return; }
+  userAnswers={};
+  currentPage=0;
+  totalPages= Math.ceil(questions.length/questionsPerPage);
+  displayQuestionsPage();
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=false;
+  document.getElementById('finishBtn').style.display='none';
+  // start countdown
+  const durationMin= quizSettings.durationMinutes || 20;
+  startTime=Date.now();
+  totalSecondsRemaining= durationMin*60;
+  startCountdown(totalSecondsRemaining);
+}
+
+// Finish quiz
+function finishQuiz() {
+  saveAnswersCurrentPage();
+
+  // check if all answered
+  let answeredAll=true;
+  for (let q of questions) {
+    if (!userAnswers[q.id]) { answeredAll=false; break; }
+  }
+  if (!answeredAll) { alert('Answer all questions'); return; }
+  if (!confirm('Finish?')) return;
+  if (countdownInterval) clearInterval(countdownInterval);
+  const endTime= Date.now();
+  const durationSeconds= Math.floor((endTime-startTime)/1000);
+  // count correct
+  let correctCount=0;
+  questions.forEach(q => {
+    if ((userAnswers[q.id]?.toUpperCase()||'')=== (q.correctOption?.toUpperCase()||'')) correctCount++;
+  });
+  const total= questions.length;
+  const perc= (correctCount/total)*100;
+  let nameVal= document.getElementById('userName').value.trim() || (currentUser.email||'');
+  // check if same name exists, update attempts
+  db.collection('results').where('name','==',nameVal).get().then(snap => {
+    if (!snap.empty) {
+      // update attempts
+      const docId= snap.docs[0].id;
+      const existing=snap.docs[0].data();
+      const newAttempts= (existing.attempts||1)+1;
+      db.collection('results').doc(docId).update({
+        attempts: newAttempts,
+        score: correctCount,
+        timestamp: new Date(),
+        duration: durationSeconds
+      }).then(()=>{ alert('Attempt updated'); loadResults(); });
+    } else {
+      // new
+      db.collection('results').add({
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        name: nameVal,
+        score: correctCount,
+        total: total,
+        attempts:1,
+        percentage: perc,
+        timestamp: new Date(),
+        duration: durationSeconds
+      }).then(()=>{ loadResults(); });
+    }
+  });
+  document.getElementById('resultSection').innerHTML= `🎉 WELL DONE ${nameVal}!! YOUR RESULT IS ${correctCount}/${total} (${perc.toFixed(2)}%)`;
+  // Show the message in the center for 5 seconds
+showCenteredMessage(`🎉 <strong>${nameVal}</strong>!! YOUR RESULT IS &nbsp;&nbsp;<strong>${correctCount}/${total} (${perc.toFixed(2)}%)</strong>`);
+  document.getElementById('resultSection').style.display='block';
+
+  document.getElementById('questionsContainer').innerHTML='';
+  document.getElementById('questionsContainer').style.display='none';
+
+  document.getElementById('finishBtn').style.display='none';
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=true;
+  document.getElementById('startQuizBtn').disabled=true;
+}
+
+// countdown
+function startCountdown(seconds) {
+  document.getElementById('timerDisplay').style.display='block';
+  let remaining=seconds;
+  document.getElementById('timerDisplay').innerText= formatTime(remaining);
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval= setInterval(()=> {
+    remaining--;
+    if (remaining<=0) {
+      clearInterval(countdownInterval);
+      document.getElementById('timerDisplay').innerText= "Time's up!";
+      alert('Time is up!');
+      finishQuiz();
+    } else {
+      document.getElementById('timerDisplay').innerText= formatTime(remaining);
+    }
+  },1000);
+}
+function formatTime(seconds) {
+  const m= Math.floor(seconds/60);
+  const s= seconds%60;
+  return `${m}:${s<10?'0':''}${s}`;
+}
+
+// Load settings
+function loadQuizSettings() {
+  db.collection('quizSettings').doc('current').get().then(doc => {
+    if (doc.exists) {
+      quizSettings=doc.data();
+      document.getElementById('quizDuration').value=quizSettings.durationMinutes;
+      if (quizSettings.availableStartTime) {
+        document.getElementById('startTime').value=quizSettings.availableStartTime.toDate().toISOString().slice(0,16);
+      }
+      if (quizSettings.availableEndTime) {
+        document.getElementById('endTime').value=quizSettings.availableEndTime.toDate().toISOString().slice(0,16);
+      }
+      checkQuizAvailabilityMessage();
+    }
+  });
+}
+
+// Save settings
+function saveQuizSettings() {
+  if (!isAdmin) { alert('Admin only'); return; }
+  const duration=parseInt(document.getElementById('quizDuration').value);
+  const st=document.getElementById('startTime').value;
+  const et=document.getElementById('endTime').value;
+  if (isNaN(duration) || !st || !et) { alert('Fill all'); return; }
+  const start=new Date(st);
+  const end=new Date(et);
+  if (start>=end) { alert('Start before end'); return; }
+  db.collection('quizSettings').doc('current').set({
+    durationMinutes: duration,
+    availableStartTime: firebase.firestore.Timestamp.fromDate(start),
+    availableEndTime: firebase.firestore.Timestamp.fromDate(end)
+  }).then(()=>{ alert('Saved'); loadQuizSettings(); });
+}
+// code to toggle questions and answers
+let reviewVisible = false; // track state
+
+function toggleReview() {
+  const reviewDiv = document.getElementById('reviewSection');
+  const reviewBtn = document.getElementById('toggleReviewBtn');
+
+  if (!reviewVisible) {
+    // Show review
+    showReviewSection();
+
+    // Change button text and style
+    reviewBtn.innerText = 'Hide Questions & Answers';
+    reviewBtn.style.backgroundColor = '#f44336'; // red
+    reviewBtn.style.color = 'white';
+
+    reviewVisible = true;
+  } else {
+    // Hide review
+    reviewDiv.style.display = 'none';
+
+    // Change button text and style
+    reviewBtn.innerText = 'Show Questions & Answers';
+    reviewBtn.style.backgroundColor = ''; // default or your style
+    reviewBtn.style.color = '';
+
+    reviewVisible = false;
+  }
+}
+// Function to show review: questions with answers highlighted
+function showReviewSection() {
+  const reviewDiv = document.getElementById('reviewSection');
+  const container= document.getElementById('questionsReviewContainer');
+  container.innerHTML='';
+
+  questions.forEach((q, index) => {
+    const div=document.createElement('div');
+    div.className='item';
+
+    // Highlight correct answer in green
+    const optionsHTML= `
+      <p style="${q.correctOption==='A'?'color:green;font-weight:bold;':'color:black;'}">A. ${q.optionA}</p>
+      <p style="${q.correctOption==='B'?'color:green;font-weight:bold;':'color:black;'}">B. ${q.optionB}</p>
+      <p style="${q.correctOption==='C'?'color:green;font-weight:bold;':'color:black;'}">C. ${q.optionC}</p>
+      <p style="${q.correctOption==='D'?'color:green;font-weight:bold;':'color:black;'}">D. ${q.optionD}</p>
+    `;
+
+    // Show user's answer in red if wrong, green if correct
+    const userAns= userAnswers[q.id] || 'No answer';
+    const answerColor= (userAns===q.correctOption) ? 'green':'red';
+
+    div.innerHTML= `
+      <strong>Question ${index + 1}:</strong> ${q.question}<br/>
+      ${optionsHTML}
+      <p>Your answer: <strong style="color:${answerColor};">${userAns}</strong></p>
+      <hr/>
+    `;
+    container.appendChild(div);
+  });
+  reviewDiv.style.display='block';
+
+  // Also show user's previous attempts average score
+  const nameVal= document.getElementById('userName').value.trim() || (currentUser.email || '');
+  db.collection('results').where('name', '==', nameVal).get().then(snap => {
+    const userScoreDiv= document.getElementById('userScoreReview');
+    if (snap.empty) {
+      userScoreDiv.innerHTML='No previous attempts.';
+    } else {
+      let sumScores=0;
+      let countScores=0;
+      snap.forEach(doc => {
+        const data=doc.data();
+        sumScores+=data.score;
+        countScores++;
+      });
+      const avgScore= (sumScores / countScores).toFixed(2);
+      userScoreDiv.innerHTML= `Average previous score: ${avgScore} / ${questions.length}`;
+    }
+  });
+}
+// codes for deleting results and questions
+function confirmDeleteQuestions() {
+  if (confirm("Are you sure you want to delete ALL questions? This action cannot be undone.")) {
+    deleteAllQuestions();
+  }
+}
+
+function confirmDeleteResults() {
+  if (confirm("Are you sure you want to delete ALL results? This action cannot be undone.")) {
+    deleteAllResults();
+  }
+}
+
+function deleteAllQuestions() {
+  // Only admin can do this, so you may want to check isAdmin here
+  if (!isAdmin) {
+    alert('Only admins can delete questions.');
+    return;
+  }
+  // Fetch all questions and delete
+  db.collection('onlinequiz').get().then(snapshot => {
+    const batch = db.batch();
+    snapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    return batch.commit();
+  }).then(() => {
+    alert('All questions have been deleted.');
+    loadQuestions(); // refresh questions list
+  }).catch((error) => {
+    console.error('Error deleting questions:', error);
+    alert('Error deleting questions.');
+  });
+}
+
+function deleteAllResults() {
+  // Only admin can do this, or you can restrict as needed
+  if (!isAdmin) {
+    alert('Only admins can delete results.');
+    return;
+  }
+  db.collection('results').get().then(snapshot => {
+    const batch = db.batch();
+    snapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    return batch.commit();
+  }).then(() => {
+    alert('All results have been deleted.');
+    loadResults(); // refresh results display
+  }).catch((error) => {
+    console.error('Error deleting results:', error);
+    alert('Error deleting results.');
+  });
+}
+//show message of result in center
+function showCenteredMessage(message) {
+  const msgDiv = document.getElementById('centeredMessage');
+  msgDiv.innerHTML = message;
+  msgDiv.classList.add('show'); // show overlay
+  // Automatically hide after 10 seconds
+  setTimeout(hideCenteredMessage, 10000);
+}
+
+function hideCenteredMessage() {
+  const msgDiv = document.getElementById('centeredMessage');
+  msgDiv.classList.remove('show'); // hide overlay
+}
+// --- initialize ---
+window.onload= ()=> {
+  loadQuizSettings();
+  loadQuestions();
+  setInterval(checkQuizAvailabilityMessage, 60000);
+};
+</script>
+</body>
+</html>
